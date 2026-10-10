@@ -1,0 +1,114 @@
+schema_version: 1
+kind: question_bank
+id: ats046-section-040
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-040
+  title: 'Checkpoint: Automation and Tooling'
+placement:
+  position: after
+  reading: sections/section-040/module-01/course-02-summary.md
+questions:
+- id: ats046-section-040-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish SBOM, provenance, signature and verification decision.
+  source_readings:
+  - sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+  prompt: A software bill of materials lists components. What does it not prove by itself?
+  options:
+  - id: a
+    text: A need to relate it to an artifact.
+    explanation: That relation remains necessary rather than being disproven.
+  - id: b
+    text: Trusted origin, safe behavior or a valid release acceptance decision.
+    explanation: Inventory and assurance are different properties.
+  - id: c
+    text: Which named components the inventory claims to include.
+    explanation: That is the record's stated purpose.
+  correct_option: b
+  explanation: Inventory and assurance are different properties.
+- id: ats046-section-040-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Relate source, build and artifact records to an assurance requirement.
+  source_readings:
+  - sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+  prompt: Evidence approves digest A but the application runs digest B. What is missing?
+  options:
+  - id: a
+    text: A trustworthy connection between assurance and actual deployed content.
+    explanation: The approval's identity must match execution.
+  - id: b
+    text: Only matching human-readable tag spelling.
+    explanation: Tags can refer to different content.
+  - id: c
+    text: A rule that every provenance record is a database backup.
+    explanation: These records serve different roles.
+  correct_option: a
+  explanation: The approval's identity must match execution.
+- id: ats046-section-040-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe retention and exception handling for release evidence.
+  source_readings:
+  - sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+  prompt: A temporary release exception is not reviewed and remains broad indefinitely. What control work
+    is incomplete?
+  options:
+  - id: a
+    text: Only changing the exception's title.
+    explanation: Titles do not narrow or review authority.
+  - id: b
+    text: All builds must stop using evidence.
+    explanation: Evidence remains useful; the exception lifecycle needs repair.
+  - id: c
+    text: Ownership, scope and follow-up of the accepted risk.
+    explanation: Exceptions are part of effective policy rather than invisible bypasses.
+  correct_option: c
+  explanation: Exceptions are part of effective policy rather than invisible bypasses.
+- id: ats046-section-040-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare configuration scanning, policy enforcement and runtime detection.
+  source_readings:
+  - sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  prompt: A scanner reports a risky declaration, while an admission mechanism is only in report mode.
+    What can be concluded?
+  options:
+  - id: a
+    text: Every runtime action was recorded by the scanner.
+    explanation: A configuration scanner has a different coverage boundary.
+  - id: b
+    text: The finding exists, but prevention is not established by those observations.
+    explanation: Scan and report behavior do not equal enforcement.
+  - id: c
+    text: The workload must have been rejected.
+    explanation: Actual mode and decision evidence matter.
+  correct_option: b
+  explanation: Scan and report behavior do not equal enforcement.
+- id: ats046-section-040-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain control drift and reproducible corrective changes.
+  source_readings:
+  - sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  prompt: A manual fix clears a finding, then reconciliation restores the flawed source value. What needs
+    correction?
+  options:
+  - id: a
+    text: The authoritative desired configuration and its verification.
+    explanation: A durable repair must survive the managed intent loop.
+  - id: b
+    text: Only the scanner's color scheme.
+    explanation: Presentation does not change desired state.
+  - id: c
+    text: Disable all reconciliation as a universal answer.
+    explanation: The appropriate response is to restore correct intent rather than abandon the operating
+      contract.
+  correct_option: a
+  explanation: A durable repair must survive the managed intent loop.
