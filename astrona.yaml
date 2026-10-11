@@ -1,9 +1,9 @@
-# Preparation scaffold. Technical pages stay draft until authoring and review.
+# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
 training:
   id: ATS046
   title: 'KCSA: Compliance and Security Frameworks'
-  description: Preparation scaffold for Compliance and Security Frameworks. Lessons and environments are
-    planned.
+  description: Concept lessons, diagrams and original scenario assessments covering every published objective
+    in this KCSA domain. No labs or playgrounds.
   certification:
     name: Kubernetes and Cloud Native Security Associate
     code: KCSA
@@ -18,7 +18,7 @@ training:
 modules:
 - id: module-intro
   title: Introduction
-  description: Planned introduction and authoring status.
+  description: Audience, learning approach, reading requirements and contribution process.
   content:
   - type: reading
     title: Introduction
@@ -34,41 +34,69 @@ modules:
     path: sections/intro/course-03-how-this-course-is-made.md
 - id: module-010
   title: Compliance Frameworks
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Compliance Frameworks.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: 'Compliance Frameworks: Introduction'
     path: sections/section-010/README.md
   - type: reading
-    title: Compliance Frameworks
+    title: Compliance Scope And Control Evidence
     path: sections/section-010/module-01/course.md
+  - type: reading
+    title: Frameworks, Scope And Demonstrable Controls
+    path: sections/section-010/module-01/course-01-frameworks-scope-and-demonstrable-controls.md
+  - type: reading
+    title: Summary
+    path: sections/section-010/module-01/course-02-summary.md
 - id: module-020
   title: Threat Modelling Frameworks
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Threat Modelling Frameworks.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: 'Threat Modelling Frameworks: Introduction'
     path: sections/section-020/README.md
   - type: reading
-    title: Threat Modelling Frameworks
+    title: Structured Threat Modelling
     path: sections/section-020/module-01/course.md
+  - type: reading
+    title: Using A Framework To Ask Better Security Questions
+    path: sections/section-020/module-01/course-01-using-a-framework-to-ask-better-security-questions.md
+  - type: reading
+    title: Summary
+    path: sections/section-020/module-01/course-02-summary.md
 - id: module-030
   title: Supply Chain Compliance
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Supply Chain Compliance.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: 'Supply Chain Compliance: Introduction'
     path: sections/section-030/README.md
   - type: reading
-    title: Supply Chain Compliance
+    title: Supply Chain Assurance Evidence
     path: sections/section-030/module-01/course.md
+  - type: reading
+    title: Demonstrating What Was Built And Deployed
+    path: sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+  - type: reading
+    title: Summary
+    path: sections/section-030/module-01/course-02-summary.md
 - id: module-040
   title: Automation and Tooling
-  description: Planned coverage of this curriculum objective.
+  description: Concept lessons and scenario reasoning for Automation and Tooling.
+  draft: true
   content:
   - type: reading
-    title: Section Overview
+    title: 'Automation and Tooling: Introduction'
     path: sections/section-040/README.md
   - type: reading
-    title: Automation and Tooling
+    title: Automation, Findings And Control Drift
     path: sections/section-040/module-01/course.md
+  - type: reading
+    title: What Security Automation Can Establish
+    path: sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  - type: reading
+    title: Summary
+    path: sections/section-040/module-01/course-02-summary.md

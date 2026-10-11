@@ -1,0 +1,33 @@
+schema_version: 1
+course_id: ATS046
+status: draft
+banks:
+- id: ats046-section-020
+  path: sections/section-020/questions.yaml
+  question_count: 5
+  placement:
+    position: after
+    reading: sections/section-020/module-01/course-02-summary.md
+  covered_sections:
+  - section-010
+  - section-020
+- id: ats046-section-040
+  path: sections/section-040/questions.yaml
+  question_count: 5
+  placement:
+    position: after
+    reading: sections/section-040/module-01/course-02-summary.md
+  covered_sections:
+  - section-030
+  - section-040
+- id: ats046-domain-review
+  path: assessments/domain-review.yaml
+  question_count: 5
+  placement:
+    position: after
+    reading: sections/section-040/module-01/course-02-summary.md
+  covered_sections:
+  - section-010
+  - section-020
+  - section-030
+  - section-040
