@@ -1,18 +1,24 @@
-# ATS046 — KCSA: Compliance and Security Frameworks
+# Compliance and Security Frameworks (ATS046)
 
-Preparation for the **Compliance and Security Frameworks** domain of **Kubernetes and Cloud Native Security Associate (KCSA)**.
-The published domain weight is **10%**. This repository belongs to
-the [ATP009 training path](https://github.com/astrona-io/ATP009).
+Kubernetes and Cloud Native Associate (KCSA) — Compliance and Security Frameworks, 10% of the published curriculum. This course is part of ATP009.
 
-**Status:** Preparation scaffold; content authoring has not started.
+Concept lessons explain each official objective through concrete examples, diagrams and scenario reasoning. Every section begins with an introduction, and every module ends with a summary. Reusable YAML question banks include the correct answer, option feedback and learning-objective mapping.
 
-The initial commit reserves the curriculum structure. Lessons, playgrounds,
-labs and assessments are planned and are not ready for learner use.
+## Course Outline
 
-See [CURRICULUM.md](CURRICULUM.md) for the objective map and authoring checklist,
-[astrona.yaml](astrona.yaml) for the course manifest, and
-[CLAUDE.md](CLAUDE.md) for writing and environment rules.
+| Section | Objective | Modules | Status |
+| --- | --- | --- | --- |
+| 010 | Compliance Frameworks | 1 | Written; review pending |
+| 020 | Threat Modelling Frameworks | 1 | Written; review pending |
+| 030 | Supply Chain Compliance | 1 | Written; review pending |
+| 040 | Automation and Tooling | 1 | Written; review pending |
 
-Curriculum source: [official KCSA page](https://training.linuxfoundation.org/certification/kubernetes-and-cloud-native-security-associate-kcsa/), checked 2026-10-10.
-License: [Apache-2.0](LICENSE). Curriculum objectives retain attribution to
-The Linux Foundation and CNCF; see [CNCF curriculum licensing](https://github.com/cncf/curriculum).
+See [the curriculum map](CURRICULUM.md) for module outcomes. The manifest registers readings in teaching order.
+
+## Authoring Status
+
+First content draft for review. No labs or playgrounds are included. No Kubernetes cluster is needed to read this course. Technical sections and the ATP009 registration remain draft until the maintainer approves publication.
+
+## Sources And Contributions
+
+Author references are recorded in [SOURCES.md](SOURCES.md). Report corrections through this repository’s issues. The material uses the repository license.

@@ -1,0 +1,95 @@
+version: 1
+approval: KCSA-LESSON-PLAN.md approved; reading-only correction 2026-10-11
+course:
+  id: ATS046
+  certification:
+    name: Kubernetes and Cloud Native Security Associate
+    code: KCSA
+    provider: CNCF / Linux Foundation
+    domain: Compliance and Security Frameworks
+    weight: 10
+    competencies:
+    - Compliance Frameworks
+    - Threat Modelling Frameworks
+    - Supply Chain Compliance
+    - Automation and Tooling
+defaults:
+  playground: false
+  module_lab: false
+  capstone: false
+  section_quiz: false
+  final_quiz: true
+sections:
+- id: section-010
+  title: Compliance Frameworks
+  curriculum_item: Compliance Frameworks
+  modules:
+  - id: module-01
+    title: Compliance Scope And Control Evidence
+    objectives:
+    - Distinguish a framework, benchmark, policy and evidence record.
+    - Explain assessment scope and shared operating responsibilities.
+    - Relate technical checks to organizational control goals.
+    - Identify why compliance evidence does not prove absence of risk.
+    outline:
+    - Frameworks, Scope And Demonstrable Controls
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: false
+- id: section-020
+  title: Threat Modelling Frameworks
+  curriculum_item: Threat Modelling Frameworks
+  modules:
+  - id: module-01
+    title: Structured Threat Modelling
+    objectives:
+    - Explain a repeatable asset, data-flow and threat analysis process.
+    - Use STRIDE categories without treating them as an automatic risk score.
+    - Relate proposed mitigations to specific trust-boundary failures.
+    - Describe residual risk and model updates after a design change.
+    outline:
+    - Using A Framework To Ask Better Security Questions
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: true
+- id: section-030
+  title: Supply Chain Compliance
+  curriculum_item: Supply Chain Compliance
+  modules:
+  - id: module-01
+    title: Supply Chain Assurance Evidence
+    objectives:
+    - Relate source, build and artifact records to an assurance requirement.
+    - Distinguish SBOM, provenance, signature and verification decision.
+    - Explain the limits of framework levels and attestations.
+    - Describe retention and exception handling for release evidence.
+    outline:
+    - Demonstrating What Was Built And Deployed
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: false
+- id: section-040
+  title: Automation and Tooling
+  curriculum_item: Automation and Tooling
+  modules:
+  - id: module-01
+    title: Automation, Findings And Control Drift
+    objectives:
+    - Compare configuration scanning, policy enforcement and runtime detection.
+    - Interpret findings through scope, version and effective behavior.
+    - Explain control drift and reproducible corrective changes.
+    - Relate exception review and evidence retention to continuous assurance.
+    outline:
+    - What Security Automation Can Establish
+    playground: false
+    module_lab: false
+    diagrams: []
+  capstone: false
+  section_quiz: true
+assessment_format: YAML question banks, schema version 1; indexed in assessments/index.yaml

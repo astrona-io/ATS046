@@ -1,0 +1,114 @@
+schema_version: 1
+kind: question_bank
+id: ats046-section-020
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material; not official examination questions.
+scope:
+  type: section
+  id: section-020
+  title: 'Checkpoint: Threat Modelling Frameworks'
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-02-summary.md
+questions:
+- id: ats046-section-020-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish a framework, benchmark, policy and evidence record.
+  source_readings:
+  - sections/section-010/module-01/course-01-frameworks-scope-and-demonstrable-controls.md
+  prompt: A team passes a configuration benchmark and claims every application data rule is correct. What
+    is the problem?
+  options:
+  - id: a
+    text: Application code never affects security.
+    explanation: Code defines important data and permission behavior.
+  - id: b
+    text: The claimed assurance exceeds the benchmark's scope.
+    explanation: A configuration assessment does not prove all business authorization.
+  - id: c
+    text: Benchmarks cannot provide any useful evidence.
+    explanation: They can supply bounded relevant findings.
+  correct_option: b
+  explanation: A configuration assessment does not prove all business authorization.
+- id: ats046-section-020-q02
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain assessment scope and shared operating responsibilities.
+  source_readings:
+  - sections/section-010/module-01/course-01-frameworks-scope-and-demonstrable-controls.md
+  prompt: A provider's report covers managed infrastructure, while the customer owns workload permissions.
+    What remains needed?
+  options:
+  - id: a
+    text: Customer evidence for its own configured responsibilities.
+    explanation: Shared responsibility does not automatically transfer customer controls.
+  - id: b
+    text: No customer assessment because one provider report exists.
+    explanation: Scope and ownership remain distinct.
+  - id: c
+    text: Only a different cluster title.
+    explanation: Naming does not demonstrate the workload grants.
+  correct_option: a
+  explanation: Shared responsibility does not automatically transfer customer controls.
+- id: ats046-section-020-q03
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Relate technical checks to organizational control goals.
+  source_readings:
+  - sections/section-010/module-01/course-01-frameworks-scope-and-demonstrable-controls.md
+  prompt: A source file declares NetworkPolicy, but runtime enforcement is not established. What evidence
+    gap remains?
+  options:
+  - id: a
+    text: Whether the YAML can contain an object name.
+    explanation: The issue is enforcement, not naming capability.
+  - id: b
+    text: A guarantee that every connection is already rejected.
+    explanation: Object presence alone does not establish it.
+  - id: c
+    text: Actual implementation of the intended connection restriction.
+    explanation: Declared intent and effective behavior are separate.
+  correct_option: c
+  explanation: Declared intent and effective behavior are separate.
+- id: ats046-section-020-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Use STRIDE categories without treating them as an automatic risk score.
+  source_readings:
+  - sections/section-020/module-01/course-01-using-a-framework-to-ask-better-security-questions.md
+  prompt: STRIDE identifies information disclosure as a category. What still determines its priority here?
+  options:
+  - id: a
+    text: A universal equal score for every deployment.
+    explanation: Different environments expose different assets and authority.
+  - id: b
+    text: The actual data, access path, consequence and operating context.
+    explanation: A category is a question prompt rather than an automatic risk score.
+  - id: c
+    text: The category name's length.
+    explanation: Naming does not establish likelihood or impact.
+  correct_option: b
+  explanation: A category is a question prompt rather than an automatic risk score.
+- id: ats046-section-020-q05
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Describe residual risk and model updates after a design change.
+  source_readings:
+  - sections/section-020/module-01/course-01-using-a-framework-to-ask-better-security-questions.md
+  prompt: A design adds a new external database and administrative identity. What should happen to its
+    threat model?
+  options:
+  - id: a
+    text: Update flows, authority and assumptions for the changed architecture.
+    explanation: The security boundary changed even if application source barely changed.
+  - id: b
+    text: Keep the old model forever because the tool names are familiar.
+    explanation: The model must represent actual dependencies.
+  - id: c
+    text: Remove all residual-risk notes.
+    explanation: The added boundary can introduce risk that needs explanation.
+  correct_option: a
+  explanation: The security boundary changed even if application source barely changed.
