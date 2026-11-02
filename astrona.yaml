@@ -35,7 +35,7 @@ modules:
 - id: module-010
   title: Compliance Frameworks
   description: Concept lessons and scenario reasoning for Compliance Frameworks.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Compliance Frameworks: Introduction'
@@ -52,7 +52,7 @@ modules:
 - id: module-020
   title: Threat Modelling Frameworks
   description: Concept lessons and scenario reasoning for Threat Modelling Frameworks.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Threat Modelling Frameworks: Introduction'
@@ -69,7 +69,7 @@ modules:
 - id: module-030
   title: Supply Chain Compliance
   description: Concept lessons and scenario reasoning for Supply Chain Compliance.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Supply Chain Compliance: Introduction'
@@ -86,7 +86,7 @@ modules:
 - id: module-040
   title: Automation and Tooling
   description: Concept lessons and scenario reasoning for Automation and Tooling.
-  status: alpha
+  maturity: alpha
   content:
   - type: reading
     title: 'Automation and Tooling: Introduction'
