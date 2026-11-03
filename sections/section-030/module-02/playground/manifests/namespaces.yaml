@@ -1,0 +1,11 @@
+# The namespaces that hold the Starfleet workloads. Pods for the checks are
+# created here; no workload runs yet.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost

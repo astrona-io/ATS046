@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Auditing A Cluster Against The CIS Kubernetes Benchmark (PLAYGROUND) —
+# playground environment. A clean sandbox: it starts, creates the
+# `compliance` namespace and the Starfleet workloads, then stays running for
+# free exploration. kube-bench is not installed: the learner runs it as a Job
+# from a preloaded image. No task, no grading. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-playground-010-02
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - docker.io/aquasec/kube-bench:v0.16.0
+
+# What the learner starts with: the `compliance` namespace and the Starfleet
+# workloads. No Job, no report and no records exist yet.
+bootstrap:
+  manifests:
+    - name: compliance
+      type: file
+      source: manifests/compliance.yaml
+    - name: starfleet
+      type: file
+      source: manifests/starfleet.yaml
+  waitFor:
+    - resource: deploy/scout
+      namespace: starfleet
+    - resource: deploy/probe
+      namespace: starfleet
+    - resource: deploy/shuttle
+      namespace: starfleet
+    - resource: deploy/drifter
+      namespace: outpost
+
+teardown:
+  keepCluster: false

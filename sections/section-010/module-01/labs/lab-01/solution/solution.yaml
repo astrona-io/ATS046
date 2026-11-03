@@ -1,0 +1,14 @@
+# Reference solution for the controls lab: the evidence record. The three
+# fixes are patches applied by apply.sh, because they change existing objects.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: control-evidence
+  namespace: starfleet
+data:
+  scope: "namespace starfleet; workloads scout, probe and shuttle"
+  kubernetes-version: "KUBERNETES_VERSION"
+  observed-at: "OBSERVED_AT"
+  "5.1.1": "PASS: no service account in starfleet is bound to cluster-admin"
+  "5.1.6": "PASS: no pod in starfleet mounts a service account token"
+  "5.2.2": "PASS: no pod in starfleet has a privileged container"

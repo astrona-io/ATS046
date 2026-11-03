@@ -1,0 +1,5 @@
+# Namespace where the learner runs the kube-bench Job and keeps the records.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: compliance

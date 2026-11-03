@@ -2,7 +2,7 @@
 
 Official KCSA objectives checked on 2026-10-11. This course covers Compliance and Security Frameworks (10%). The six domain weights are 14%, 22%, 22%, 16%, 16% and 10%.
 
-These primary references support author review. Teaching pages are self-contained. This is conceptual reading material; no command execution or runtime verification is claimed.
+These primary references support author review. Teaching pages are self-contained. The labs use kube-bench, Trivy, cosign and Kyverno; they are built untested and no runtime verification is claimed.
 
 - [Official KCSA objectives](https://training.linuxfoundation.org/certification/kubernetes-and-cloud-native-security-associate-kcsa/)
 - [Kubernetes security concepts](https://kubernetes.io/docs/concepts/security/)
@@ -22,3 +22,9 @@ These primary references support author review. Teaching pages are self-containe
 - [PCI DSS](https://www.pcisecuritystandards.org/standards/pci-dss/)
 
 Security controls depend on configuration and platform version. Standards support assessment and evidence; adopting a tool does not establish compliance. Questions are original practice material.
+- [kube-bench](https://github.com/aquasecurity/kube-bench)
+- [Trivy](https://trivy.dev/)
+- [Sigstore cosign](https://docs.sigstore.dev/)
+- [Kyverno](https://kyverno.io/docs/)
+- [MITRE ATT&CK for Containers](https://attack.mitre.org/matrices/enterprise/containers/)
+- [Falco rules](https://falco.org/docs/)

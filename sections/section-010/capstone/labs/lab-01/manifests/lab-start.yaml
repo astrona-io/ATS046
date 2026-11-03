@@ -1,0 +1,112 @@
+# Capstone starting state. Namespace `orbit` is the scope of the assessment:
+# beacon (privileged, shares the node process namespace) and relay (a client),
+# both with a mounted service account token, and a service account
+# `beacon-ci` bound to cluster-admin. Namespace `audit` is where the
+# assessment Job runs; it has no Pod Security labels and stays that way.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: orbit
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: audit
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: beacon
+  namespace: orbit
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: relay
+  namespace: orbit
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: beacon-ci
+  namespace: orbit
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: orbit-beacon-ci-admin
+subjects:
+  - kind: ServiceAccount
+    name: beacon-ci
+    namespace: orbit
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beacon
+  namespace: orbit
+  labels:
+    app: beacon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beacon
+  template:
+    metadata:
+      labels:
+        app: beacon
+    spec:
+      serviceAccountName: beacon
+      hostPID: true
+      containers:
+        - name: beacon
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          securityContext:
+            privileged: true
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relay
+  namespace: orbit
+  labels:
+    app: relay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: relay
+  template:
+    metadata:
+      labels:
+        app: relay
+    spec:
+      serviceAccountName: relay
+      containers:
+        - name: relay
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi

@@ -1,0 +1,253 @@
+# Knowledge check for section 010. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats046-010
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-010
+  title: "Compliance Frameworks"
+questions:
+  - id: ats046-010-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Distinguish a framework, a benchmark, a policy and an evidence record"
+    source_readings:
+      - sections/section-010/module-01/course-01-frameworks-benchmarks-and-evidence.md
+    prompt: |-
+      A team writes down: "Only named people may hold the `cluster-admin` role." Which kind of document is this sentence?
+    options:
+      - id: a
+        text: "A benchmark recommendation."
+        explanation: "A benchmark lists configuration recommendations for one technology and one version. This sentence is the organization's own rule."
+      - id: b
+        text: "An evidence record."
+        explanation: "An evidence record proves a control works, for example a list of bindings. A rule in words does not prove anything."
+      - id: c
+        text: "A policy."
+        explanation: "Correct. A policy is the organization's own written rule. A control implements it, and an evidence record shows that the control works."
+      - id: d
+        text: "A framework."
+        explanation: "A framework organizes goals and controls at a high level. It does not name a role such as `cluster-admin`."
+    correct_option: c
+    explanation: "A policy is the organization's own written rule. A control implements it and an evidence record shows that the control works."
+
+  - id: ats046-010-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Relate technical checks to organizational control goals"
+    source_readings:
+      - sections/section-010/module-01/course-01-frameworks-benchmarks-and-evidence.md
+    prompt: |-
+      A policy says that administrative access is limited. Which item is the best evidence that the control works for the `starfleet` namespace at the time of the check?
+    options:
+      - id: a
+        text: "The text of the CIS Kubernetes Benchmark recommendation about `cluster-admin`."
+        explanation: "The recommendation says what a hardened setting looks like. It says nothing about this cluster."
+      - id: b
+        text: "A list of every binding to `cluster-admin` with its subjects, taken from the cluster with a recorded time."
+        explanation: "Correct. It shows the configured state of this cluster at a known time, and anyone with read access can repeat it."
+      - id: c
+        text: "A statement from the platform team that nobody has `cluster-admin`."
+        explanation: "A statement without a check cannot be repeated, so an auditor cannot trust it."
+      - id: d
+        text: "The name of the framework that the organization follows."
+        explanation: "A framework name shows intent. It is not evidence about a setting."
+    correct_option: b
+    explanation: "Evidence shows the real state of this cluster at a known time and can be repeated by another person."
+
+  - id: ats046-010-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain assessment scope and shared operating responsibilities"
+    source_readings:
+      - sections/section-010/module-01/course-02-scope-versions-and-responsibility.md
+    prompt: |-
+      An assessment of the `starfleet` namespace finds no privileged pods. A reviewer then finds a privileged `kube-proxy` pod in `kube-system`. What is the correct conclusion?
+    options:
+      - id: a
+        text: "The first assessment was wrong and must be repeated with the same scope."
+        explanation: "The first assessment answered its own question correctly. A different scope gives a different answer."
+      - id: b
+        text: "Both results are true for their scopes, and the record must state which scope each one covers."
+        explanation: "Correct. A result is a statement about its scope only. A clean result for `starfleet` says nothing about `kube-system`."
+      - id: c
+        text: "The cluster fails, because one privileged pod fails every namespace."
+        explanation: "A check applies to the scope that was assessed. It does not spread to other namespaces."
+      - id: d
+        text: "The `kube-proxy` pod can be ignored, because system namespaces are never assessed."
+        explanation: "System namespaces can be part of a scope. They are not excluded automatically, and the exclusion must be written down."
+    correct_option: b
+    explanation: "A result is a statement about its scope only, so the record must state the scope."
+
+  - id: ats046-010-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain assessment scope and shared operating responsibilities"
+    source_readings:
+      - sections/section-010/module-01/course-02-scope-versions-and-responsibility.md
+    prompt: |-
+      A team runs its workloads on a managed Kubernetes service. An auditor asks for evidence about the permissions of the API server process. Who can produce this evidence?
+    options:
+      - id: a
+        text: "The customer, by running an audit command on the control plane nodes."
+        explanation: "The customer cannot log in to the control plane nodes of a managed service."
+      - id: b
+        text: "The customer, by reading the `starfleet` namespace with `kubectl`."
+        explanation: "Reading a namespace shows workload objects. It does not show the files or processes of the control plane."
+      - id: c
+        text: "No one, because managed services cannot be audited."
+        explanation: "Providers publish assurance reports, and the customer audits its own layers."
+      - id: d
+        text: "The provider, for example through its own assurance report for the control plane."
+        explanation: "Correct. The provider runs the control plane, so it is responsible for the evidence, and the customer cites the report with its date and scope."
+    correct_option: d
+    explanation: "The party that runs a layer produces the evidence for it. For a managed control plane that is the provider."
+
+  - id: ats046-010-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Identify why compliance evidence does not prove absence of risk"
+    source_readings:
+      - sections/section-010/module-01/course-02-scope-versions-and-responsibility.md
+    prompt: |-
+      A record says that all checks passed on 2026-11-03T10:15:00Z. A new Deployment with a privileged container is created on 2026-11-04. What does the record show on 2026-11-05?
+    options:
+      - id: a
+        text: "It still shows the present state, because a passed record stays valid."
+        explanation: "A record is true only for the time of the observation."
+      - id: b
+        text: "It shows the state at the time of the observation only, and the checks must run again."
+        explanation: "Correct. The cluster changed after the record was written, so the record no longer describes it."
+      - id: c
+        text: "It becomes invalid by itself and Kubernetes marks it as expired."
+        explanation: "Kubernetes does not track the age of a ConfigMap record. Nothing marks it as expired."
+      - id: d
+        text: "It shows the state of the cluster for the next 30 days, as required by the benchmark."
+        explanation: "The benchmark sets no validity period for a record."
+    correct_option: b
+    explanation: "A record is true for the time of the observation and becomes wrong when the cluster changes."
+
+  - id: ats046-010-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Collect evidence for service account tokens from the Kubernetes API"
+    source_readings:
+      - sections/section-010/module-01/course-03-collecting-control-evidence-with-kubectl.md
+    prompt: |-
+      A team sets `automountServiceAccountToken: false` in the pod template of the `scout` Deployment and applies it. Which check proves that the running pods no longer mount a token?
+    options:
+      - id: a
+        text: "Read the pod template of the Deployment and confirm the field is set."
+        explanation: "This shows the Deployment object only. A pod that started before the change keeps its old settings."
+      - id: b
+        text: "Run `kubectl apply` again and read the success message."
+        explanation: "A success message shows that the API server accepted the object. It says nothing about the running pods."
+      - id: c
+        text: "List the pods of `starfleet` and count the volumes whose name starts with `kube-api-access`."
+        explanation: "Correct. This reads the running pods, and a count of zero shows that no token volume is mounted."
+      - id: d
+        text: "Check that the `scout` service account no longer exists."
+        explanation: "Deleting the service account is not required, and the pods would be affected."
+    correct_option: c
+    explanation: "The check must read the running pods, because a pod that started before the change keeps its old settings."
+
+  - id: ats046-010-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what kube-bench reads and why its pod needs host access"
+    source_readings:
+      - sections/section-010/module-02/course-01-how-kube-bench-reads-a-cluster.md
+    prompt: |-
+      The kube-bench Job pod has `hostPID: true` and read-only `hostPath` volumes. Why does it need them?
+    options:
+      - id: a
+        text: "The checks look at node processes and files, which are not visible to a pod in its own namespaces."
+        explanation: "Correct. Checks read the flags of processes such as `kube-apiserver` and files such as the static pod manifests on the node."
+      - id: b
+        text: "The Kubernetes API does not allow a pod to list other pods."
+        explanation: "A pod can list pods if its service account allows it. That is not the reason for host access."
+      - id: c
+        text: "kube-bench changes the node files to fix every failed check."
+        explanation: "kube-bench only reads. The mounts are read-only."
+      - id: d
+        text: "The Job needs to start faster, and host paths skip the image pull."
+        explanation: "Host mounts do not affect image pulls."
+    correct_option: a
+    explanation: "The checks read node processes and files, which are not visible to a pod in its own namespaces."
+
+  - id: ats046-010-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Name the four result statuses and explain why manual checks report WARN"
+    source_readings:
+      - sections/section-010/module-02/course-02-reading-kube-bench-results.md
+    prompt: |-
+      A kube-bench report for the `policies` target shows zero `FAIL` entries and many `WARN` entries. What is the correct reading?
+    options:
+      - id: a
+        text: "The policies section passed, so the cluster follows every recommendation in it."
+        explanation: "Zero failures does not mean a pass. These checks were not decided."
+      - id: b
+        text: "The audit failed, because `WARN` is a stricter status than `FAIL`."
+        explanation: "`WARN` is not stricter than `FAIL`. It means that kube-bench cannot decide."
+      - id: c
+        text: "The checks are manual, so kube-bench lists them and a person must decide each one."
+        explanation: "Correct. A `WARN` is no statement about the cluster, and the policies checks need human judgment."
+      - id: d
+        text: "The report is broken, because the policies target always passes."
+        explanation: "The policies target has no automated checks to pass."
+    correct_option: c
+    explanation: "A `WARN` means kube-bench cannot decide, and the policies checks are manual."
+
+  - id: ats046-010-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Build a summary from a kube-bench report and record accepted failures as exceptions"
+    source_readings:
+      - sections/section-010/module-02/course-03-recording-and-excepting-findings.md
+    prompt: |-
+      A team accepts the failure of check `1.2.5` because only the control plane owner can fix it. Which record is correct?
+    options:
+      - id: a
+        text: "Run kube-bench again with `--skip 1.2.5` so the check no longer appears as a failure."
+        explanation: "The skipped check shows as `INFO` and the failure disappears without a reason, an owner or a review date."
+      - id: b
+        text: "Delete the check from the report file before it is stored."
+        explanation: "Editing the report removes the evidence and makes the record untrustworthy."
+      - id: c
+        text: "Mark the check as `PASS` in the summary and note the owner."
+        explanation: "The check failed, so a `PASS` is false."
+      - id: d
+        text: "Keep the failure in the summary and add an exception with the reason, the owner and a review date."
+        explanation: "Correct. The failure stays visible, and the exception records who accepted it, why, and when it is reviewed."
+    correct_option: d
+    explanation: "An exception keeps the failure visible and records the reason, the owner and a review date."
+
+  - id: ats046-010-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain why compliance evidence does not prove absence of risk"
+    source_readings:
+      - sections/section-010/module-02/course-03-recording-and-excepting-findings.md
+      - sections/section-010/module-01/course-01-frameworks-benchmarks-and-evidence.md
+    prompt: |-
+      A cluster passes every automated check of the CIS Kubernetes Benchmark. What can the team conclude?
+    options:
+      - id: a
+        text: "The checked settings met the benchmark at the time of the run, and other risks still need their own work."
+        explanation: "Correct. The benchmark covers configuration settings for one version, and it does not cover application flaws or later changes."
+      - id: b
+        text: "The cluster is secure and needs no further threat or vulnerability work."
+        explanation: "A configuration benchmark does not cover application logic, images or later changes."
+      - id: c
+        text: "The organization meets every obligation of its framework."
+        explanation: "A framework or a standard covers more than one cluster benchmark."
+      - id: d
+        text: "The cluster stays compliant until the next Kubernetes upgrade."
+        explanation: "Any change to the cluster can break a control, so the result is not valid until the next upgrade."
+    correct_option: a
+    explanation: "A passed benchmark shows that the checked settings met the recommendations at the time of the run, and it does not prove the absence of risk."

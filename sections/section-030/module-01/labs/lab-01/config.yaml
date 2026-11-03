@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Supply Chain Assurance Evidence (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-030-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - alpine:3.22.2
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: "Start the Starfleet workloads, then install cosign 2.6.5 and Trivy 0.76.1 in the toolbox pod"
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-scout
+      description: Wait until the evidence record exists
+      type: file
+      source: testing/wait-for-scout.sh
+
+validation:
+  scripts:
+    - name: sbom-for-scout
+      description: An SPDX JSON SBOM of the scout image exists in the toolbox
+      type: file
+      source: validation/validate-sbom-for-scout.sh
+      hint: Run trivy image with --format spdx-json and --output /work/sbom/scout.spdx.json inside the toolbox pod. Use the digest of the image the scout pod runs.
+    - name: sbom-scan-report
+      description: The SBOM was scanned and the report keeps HIGH and CRITICAL findings only
+      type: file
+      source: validation/validate-sbom-scan-report.sh
+      hint: Use trivy sbom with --severity HIGH,CRITICAL, --format json and --output /work/reports/scout-sbom-scan.json.
+    - name: evidence-matches-artifacts
+      description: The evidence ConfigMap matches the deployed digest, the SBOM file and the scan report
+      type: file
+      source: validation/validate-evidence-matches-artifacts.sh
+      hint: Read the digest from the imageID of the scout pod. Compute the other values from the files in the toolbox; do not type them from memory.
+    - name: release-decision
+      description: The decision follows the findings and an exception has an owner and a future expiry
+      type: file
+      source: validation/validate-release-decision.sh
+      hint: No HIGH or CRITICAL finding means approved. Otherwise the decision is rejected, or approved-with-exception with exception-owner and an exception-expires date after today.
+
+teardown:
+  keepCluster: false

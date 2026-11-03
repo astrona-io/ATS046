@@ -1,0 +1,228 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats046-020
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Threat Modelling Frameworks"
+questions:
+  - id: ats046-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Place trust boundaries on a data-flow diagram of a Kubernetes application"
+    source_readings:
+      - sections/section-020/module-01/course-01-assets-data-flows-and-trust-boundaries.md
+    prompt: |-
+      A data-flow diagram shows a client in another namespace, a service in `starfleet` and a database. Where does a trust boundary belong?
+    options:
+      - id: a
+        text: "Around every box on the diagram, so that each component is separate."
+        explanation: "A boundary marks a change in who controls or trusts the data, not the edge of every component."
+      - id: b
+        text: "Where a flow crosses from one level of trust or control to another, such as from the client namespace into the service."
+        explanation: "Correct. A trust boundary is where data passes between parties with different authority, so each crossing is a place to ask what can go wrong."
+      - id: c
+        text: "Only around the database, because it holds the data."
+        explanation: "The database is an asset, but flows into the service also cross a change of trust."
+    correct_option: b
+    explanation: "A trust boundary is where data passes between parties with different authority, so each crossing is a place to ask what can go wrong."
+
+  - id: ats046-020-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Identify assets and the flows that reach them"
+    source_readings:
+      - sections/section-020/module-01/course-01-assets-data-flows-and-trust-boundaries.md
+    prompt: |-
+      Which item is an asset in a threat model of a Kubernetes application?
+    options:
+      - id: a
+        text: "The STRIDE category list."
+        explanation: "STRIDE is a set of questions, not something the system protects."
+      - id: b
+        text: "The diagram file."
+        explanation: "The diagram describes the system. It is not what an attacker wants."
+      - id: c
+        text: "A Secret that holds credentials, because an attacker gains from reading or changing it."
+        explanation: "Correct. An asset is something of value that the system holds or provides, such as data, an identity or a capability."
+    correct_option: c
+    explanation: "An asset is something of value that the system holds or provides, such as data, an identity or a capability."
+
+  - id: ats046-020-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Classify a threat with the matching STRIDE category"
+    source_readings:
+      - sections/section-020/module-01/course-02-asking-the-stride-questions.md
+    prompt: |-
+      An attacker sends requests to the API server with a service account token taken from another pod, and the API server treats the requests as coming from that account. Which STRIDE category is this?
+    options:
+      - id: a
+        text: "Spoofing, because the attacker pretends to be another identity."
+        explanation: "Correct. Using someone else's credential to act as them is the spoofing category."
+      - id: b
+        text: "Repudiation, because the requests are logged."
+        explanation: "Repudiation is about being unable to prove who did an action. Here the attacker is the problem, not missing logs."
+      - id: c
+        text: "Denial of service, because the API server is busy."
+        explanation: "Nothing here exhausts a resource."
+    correct_option: a
+    explanation: "Using someone else's credential to act as them is the spoofing category."
+
+  - id: ats046-020-q04
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Use STRIDE categories without treating them as an automatic risk score"
+    source_readings:
+      - sections/section-020/module-01/course-02-asking-the-stride-questions.md
+    prompt: |-
+      STRIDE identifies information disclosure as a category. What determines how urgent a specific disclosure finding is?
+    options:
+      - id: a
+        text: "A fixed equal score for every deployment."
+        explanation: "Different environments expose different data and authority."
+      - id: b
+        text: "The length of the category name."
+        explanation: "A name does not set likelihood or impact."
+      - id: c
+        text: "The number of STRIDE categories in the model."
+        explanation: "The count of categories says nothing about one finding."
+      - id: d
+        text: "The actual data, the path to it, the consequence and the operating context."
+        explanation: "Correct. A category is a question to ask, not a risk score. Priority comes from the data, the path, the effect and the environment."
+    correct_option: d
+    explanation: "A category is a question to ask, not a risk score. Priority comes from the data, the path, the effect and the environment."
+
+  - id: ats046-020-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Recognize elevation of privilege in a Kubernetes access grant"
+    source_readings:
+      - sections/section-020/module-01/course-02-asking-the-stride-questions.md
+    prompt: |-
+      A web-facing service account is bound to the `edit` ClusterRole, so code that runs in its pod can change workloads across the cluster. Which STRIDE category does this grant enable?
+    options:
+      - id: a
+        text: "Repudiation."
+        explanation: "The grant does not hide who acted."
+      - id: b
+        text: "Elevation of privilege, because a compromised pod gains more rights than its job needs."
+        explanation: "Correct. Excess rights let a small foothold become broad control."
+      - id: c
+        text: "Information disclosure only, because Secrets might be read."
+        explanation: "The `edit` role also allows changes, so the category is wider than disclosure."
+    correct_option: b
+    explanation: "Excess rights let a small foothold become broad control, which is elevation of privilege."
+
+  - id: ats046-020-q06
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe residual risk and model updates after a design change"
+    source_readings:
+      - sections/section-020/module-01/course-03-mitigations-and-residual-risk.md
+    prompt: |-
+      A design adds a new external database and an administrative identity. What should happen to the threat model?
+    options:
+      - id: a
+        text: "Keep the old model, because the tool names are the same."
+        explanation: "The model must describe the real dependencies."
+      - id: b
+        text: "Remove the residual-risk notes, because the change is small."
+        explanation: "The new boundary can add risk that needs a written decision."
+      - id: c
+        text: "Update the flows, the authority and the assumptions for the changed design."
+        explanation: "Correct. The security boundary changed even if the application code barely changed."
+    correct_option: c
+    explanation: "The security boundary changed even if the application code barely changed, so the model needs new flows, authority and assumptions."
+
+  - id: ats046-020-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Write a NetworkPolicy that restricts a flow to the right pod port"
+    source_readings:
+      - sections/section-020/module-01/course-03-mitigations-and-residual-risk.md
+    prompt: |-
+      A Service exposes port `80` and forwards to port `8080` on its pods. A NetworkPolicy must allow only one client to reach those pods. Which port goes in the policy?
+    options:
+      - id: a
+        text: "`8080`, because a NetworkPolicy matches the port on the pod."
+        explanation: "Correct. NetworkPolicy ports are pod ports, not Service ports."
+      - id: b
+        text: "`80`, because clients connect to the Service port."
+        explanation: "The policy sees traffic after it reaches the pod, so the Service port does not match."
+      - id: c
+        text: "No port, because a policy always applies to every port."
+        explanation: "A rule with no ports allows every port, which is wider than the requirement."
+    correct_option: a
+    explanation: "NetworkPolicy ports are pod ports, not Service ports."
+
+  - id: ats046-020-q08
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe MITRE ATT&CK tactics and techniques"
+    source_readings:
+      - sections/section-020/module-02/course-01-tactics-techniques-and-the-kubernetes-matrices.md
+    prompt: |-
+      In MITRE ATT&CK, what is the difference between a tactic and a technique?
+    options:
+      - id: a
+        text: "A tactic is a tool and a technique is a person."
+        explanation: "Neither term names a tool or a person."
+      - id: b
+        text: "A tactic is a vulnerability number and a technique is a patch."
+        explanation: "ATT&CK describes behavior, not vulnerability or patch identifiers."
+      - id: c
+        text: "A tactic is a risk score and a technique is a control."
+        explanation: "ATT&CK gives no scores and lists no controls."
+      - id: d
+        text: "A tactic is the goal of an attacker at one stage, and a technique is a way to reach that goal."
+        explanation: "Correct. For example, Credential Access is a tactic and stealing a service account token is a technique for it."
+    correct_option: d
+    explanation: "A tactic is the goal at one stage, and a technique is a way to reach it."
+
+  - id: ats046-020-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the steps of a Kubernetes attack path"
+    source_readings:
+      - sections/section-020/module-02/course-02-following-an-attack-path.md
+    prompt: |-
+      An attacker runs code in a pod and reads its service account token. The service account has no Role. What does a request to the API server with that token do?
+    options:
+      - id: a
+        text: "It is rejected as unauthenticated, because tokens only work inside the pod."
+        explanation: "A valid token authenticates from anywhere that can reach the API server."
+      - id: b
+        text: "It is authenticated as the service account and then refused for any action the account has no right to do."
+        explanation: "Correct. Authentication and authorization are separate checks, so a valid token with no rights gets a Forbidden response."
+      - id: c
+        text: "It is allowed, because every service account may read Secrets."
+        explanation: "Service accounts have no such right unless a role gives it."
+    correct_option: b
+    explanation: "Authentication and authorization are separate checks, so a valid token with no rights gets a Forbidden response."
+
+  - id: ats046-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Break an attack path with the control that matches each step"
+    source_readings:
+      - sections/section-020/module-02/course-03-breaking-the-path.md
+    prompt: |-
+      A pod needs no Kubernetes API access. Which setting removes the stealable token from the pod entirely?
+    options:
+      - id: a
+        text: "`automountServiceAccountToken: false` on the pod or the service account."
+        explanation: "Correct. The kubelet then does not create the token volume, so there is nothing to read. The pod value wins when both are set."
+      - id: b
+        text: "Deleting the RoleBinding of the service account."
+        explanation: "This removes rights, but the token file stays in the pod."
+      - id: c
+        text: "A NetworkPolicy with `policyTypes: Egress`."
+        explanation: "A policy limits connections, but it does not remove files from the pod."
+    correct_option: a
+    explanation: "With automount off, the kubelet does not create the token volume, so there is nothing to read."

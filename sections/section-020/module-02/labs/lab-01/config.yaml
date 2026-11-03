@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Break A Kubernetes Attack Path (LAB). Graded against the live cluster.
+# UNTESTED: built without running it. Validated statically only.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-020-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: the Starfleet workloads, a privileged shuttle that mounts a
+# hostPath directory and keeps its token, a Role that lets its service account
+# read Secrets, and no NetworkPolicy. The faults stay on purpose. kind's default
+# network plugin (kindnet) enforces NetworkPolicy.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the workloads and the faulty setup
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-policy
+      description: Wait until the network plugin enforces the probe policy
+      type: file
+      source: testing/wait-for-policy.sh
+
+validation:
+  scripts:
+    - name: shuttle-secrets-unreadable
+      description: The shuttle service account cannot read Secrets or use the API
+      type: file
+      source: validation/validate-shuttle-secrets-unreadable.sh
+      hint: Delete the RoleBinding and the Role named shuttle-secret-reader in starfleet. Keep the service account and the Secret. Moving the grant to another binding does not fix it.
+    - name: shuttle-token-not-mounted
+      description: The running shuttle pods have no service account token
+      type: file
+      source: validation/validate-shuttle-token-not-mounted.sh
+      hint: Set automountServiceAccountToken to false in the pod template of the shuttle Deployment and wait for the new pod. shuttle never calls the API.
+    - name: shuttle-not-privileged
+      description: shuttle runs unprivileged, as non-root, without host access
+      type: file
+      source: validation/validate-shuttle-not-privileged.sh
+      hint: Remove privileged, the hostPath volume and its mount. Set runAsNonRoot true with a numeric runAsUser, allowPrivilegeEscalation false and drop ALL capabilities.
+    - name: shuttle-egress-limited
+      description: shuttle reaches probe only
+      type: file
+      source: validation/validate-shuttle-egress-limited.sh
+      hint: Add a NetworkPolicy for the shuttle pods with policyTypes Egress. Allow the probe pods on container port 8080 and kube-dns on port 53 (UDP and TCP). Without the DNS rule the name probe does not resolve.
+
+teardown:
+  keepCluster: false

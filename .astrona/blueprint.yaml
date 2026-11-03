@@ -1,0 +1,43 @@
+# Course blueprint for ATS046 (KCSA: Compliance and Security Frameworks, 10%).
+# Written 2026-11-03 after the maintainer lifted the reading-only rule.
+version: 1
+mode: extend
+course:
+  id: ATS046
+  title: "KCSA: Compliance and Security Frameworks"
+  git_url: ssh://git@github.com/astrona-io/ATS046.git
+  certification: {name: Kubernetes and Cloud Native Security Associate, code: KCSA, provider: CNCF / Linux Foundation, domain: Compliance and Security Frameworks, weight: 10}
+  environment:
+    runtime: kind
+    kind_node_image: "kindest/node:v1.35.8"
+    podinfo: "6.15.0"
+    go-httpbin: "2.25.0"
+    kyverno: "1.19.1"
+defaults: {playground: true, module_lab: true, capstone: true, section_quiz: true, final_quiz: true}
+existing:
+  note: Each section already has module-01 (landing + one short part + summary, draft readings). Keep them, deepen to >=90 lines per part, add playground, lab and markers.
+sections:
+  - id: section-010
+    title: Compliance Frameworks
+    modules:
+      - {id: module-01, title: Compliance Scope And Control Evidence, lab: "map benchmark-style controls to kubectl evidence, fix failing controls in a cluster, record evidence"}
+      - {id: module-02, title: Auditing A Cluster Against The CIS Kubernetes Benchmark, tool: kube-bench}
+    capstone: scoped compliance assessment of a namespace/cluster with evidence
+  - id: section-020
+    title: Threat Modelling Frameworks
+    modules:
+      - {id: module-01, title: Structured Threat Modelling (STRIDE, data flows, trust boundaries), lab: "turn STRIDE threats into concrete mitigations on a deployed app"}
+      - {id: module-02, title: Kubernetes Attack Paths And MITRE ATT&CK, lab: "break an attack path with RBAC, securityContext, NetworkPolicy"}
+    capstone: threat model driven hardening of a small app
+  - id: section-030
+    title: Supply Chain Compliance
+    modules:
+      - {id: module-01, title: Supply Chain Assurance Evidence (SBOM, provenance, SLSA, in-toto), tool: trivy SBOM}
+      - {id: module-02, title: Signing And Verifying Images, tool: cosign + Kyverno verifyImages with local registry}
+    capstone: release gate that accepts only signed images with SBOM
+  - id: section-040
+    title: Automation and Tooling
+    modules:
+      - {id: module-01, title: Automation, Findings And Control Drift, tool: trivy config scan}
+      - {id: module-02, title: Policy Enforcement And Runtime Detection, tool: Kyverno/ValidatingAdmissionPolicy; Falco rules read as text}
+    capstone: continuous compliance loop (scan, enforce, detect drift, exception)

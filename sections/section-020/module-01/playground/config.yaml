@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Structured Threat Modelling (PLAYGROUND) - playground environment.
+# A clean sandbox: it starts, applies the Starfleet workloads and the starting
+# state, then stays running for free exploration. No task, no grading, no
+# `astrona submit`. UNTESTED: built without running it.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-playground-020-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: scout is bound to the edit ClusterRole, probe is privileged and runs as root, and probe accepts traffic from every pod. kind's default network plugin (kindnet) enforces NetworkPolicy.
+bootstrap:
+  manifests:
+    - name: workloads
+      type: file
+      source: manifests/workloads.yaml
+    - name: access
+      type: file
+      source: manifests/access.yaml
+  waitFor:
+    - resource: deploy/scout
+      namespace: starfleet
+    - resource: deploy/probe
+      namespace: starfleet
+    - resource: deploy/shuttle
+      namespace: starfleet
+    - resource: deploy/drifter
+      namespace: outpost
+
+teardown:
+  keepCluster: false

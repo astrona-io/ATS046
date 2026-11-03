@@ -1,0 +1,57 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: release-gate
+spec:
+  webhookConfiguration:
+    failurePolicy: Fail
+    timeoutSeconds: 30
+  background: false
+  rules:
+    - name: verify-signature
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["starfleet"]
+      verifyImages:
+        - imageReferences:
+            - "registry.supply-chain.svc.cluster.local:5000/*"
+          failureAction: Enforce
+          mutateDigest: true
+          verifyDigest: true
+          required: true
+          attestors:
+            - count: 1
+              entries:
+                - keys:
+                    publicKeys: |-
+                      __COSIGN_PUBLIC_KEY__
+                    rekor:
+                      ignoreTlog: true
+                      url: https://rekor.sigstore.dev
+                    ctlog:
+                      ignoreSCT: true
+    - name: require-sbom-attestation
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["starfleet"]
+      verifyImages:
+        - imageReferences:
+            - "registry.supply-chain.svc.cluster.local:5000/*"
+          failureAction: Enforce
+          attestations:
+            - type: https://spdx.dev/Document
+              attestors:
+                - count: 1
+                  entries:
+                    - keys:
+                        publicKeys: |-
+                          __COSIGN_PUBLIC_KEY_ATTEST__
+                        rekor:
+                          ignoreTlog: true
+                          url: https://rekor.sigstore.dev
+                        ctlog:
+                          ignoreSCT: true

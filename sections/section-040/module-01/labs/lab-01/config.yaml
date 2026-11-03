@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Automation, Findings And Control Drift (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-040-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - ghcr.io/aquasecurity/trivy:0.76.1
+
+# Starting state: `scout` without a securityContext, `probe` with a privileged
+# container, `shuttle` that writes to its root file system, a Trivy toolbox in
+# `tools` and an empty exception register.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the workloads, the Trivy toolbox and the empty exception register
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: probe-not-privileged
+      description: probe runs no privileged container and is available
+      type: file
+      source: validation/validate-probe-not-privileged.sh
+      hint: Set privileged to false (or remove the field) in the probe container securityContext. The running pod must be replaced, so check the new pod and not only the Deployment.
+    - name: scout-hardened
+      description: scout pods run as a numeric non-root user with the hardened settings
+      type: file
+      source: validation/validate-scout-hardened.sh
+      hint: Set runAsNonRoot, a numeric runAsUser (the podinfo image user is 100), seccompProfile RuntimeDefault, allowPrivilegeEscalation false and capabilities drop ALL. Check the running pods.
+    - name: services-still-answer
+      description: shuttle still gets answers from scout and probe
+      type: file
+      source: validation/validate-services-answer.sh
+      hint: A fix that leaves a pod in CreateContainerConfigError or CrashLoopBackOff breaks the Service. Check the new pods with kubectl get pods.
+    - name: shuttle-not-changed
+      description: shuttle was not made read-only to clear the finding, and still runs
+      type: file
+      source: validation/validate-shuttle-unchanged.sh
+      hint: shuttle must keep a writable root file system, because it writes /tmp/last-run. Record an exception instead of changing it.
+    - name: exception-recorded
+      description: The register holds one dated, scoped and explained exception for KSV-0014 on shuttle
+      type: file
+      source: validation/validate-exception-recorded.sh
+      hint: In the trivy-exceptions ConfigMap, key trivyignore.yaml, write one entry under misconfigurations with id KSV-0014, a paths list that names shuttle, a one-line statement and an expired_at date (yyyy-mm-dd) that is in the future and within 90 days.
+
+teardown:
+  keepCluster: false

@@ -5,20 +5,24 @@ exam_objectives:
 ---
 # Compliance Scope And Control Evidence
 
-This module develops the reasoning needed to distinguish a framework, benchmark, policy and evidence record.
+This module explains how a security goal becomes a control, and how a control becomes evidence that another person can check. It then collects that evidence from a Kubernetes cluster with `kubectl`.
 
 ## Learning Goals
 
-- Distinguish a framework, benchmark, policy and evidence record.
-- Explain assessment scope and shared operating responsibilities.
-- Relate technical checks to organizational control goals.
-- Identify why compliance evidence does not prove absence of risk.
+- Distinguish a framework, a benchmark, a policy and an evidence record.
+- Explain assessment scope, versions, time and shared responsibility.
+- Collect evidence for role bindings, service account tokens and privileged containers from the Kubernetes API.
+- Record the evidence with its scope, cluster version and time, and explain why it does not prove the absence of risk.
 
 ## Before You Start
 
-Read the examples as descriptions of system behavior. No cluster, account, laboratory or installed tool is required. Technical terms are defined where they are used.
+You should know what a pod, a namespace and a service account are. The hands-on part uses a playground with a kind cluster, `kubectl` and `jq`. Technical terms are defined where they first appear.
 
 ## Reading Order
 
-1. Frameworks, Scope And Demonstrable Controls
-2. Summary
+1. Frameworks, Benchmarks, Policies And Evidence
+2. Scope, Versions And Shared Responsibility
+3. Collecting Control Evidence With kubectl
+4. Summary
+
+<!-- astrona:playground -->

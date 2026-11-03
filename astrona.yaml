@@ -1,9 +1,9 @@
-# Reading-only course. YAML assessments are registered separately in assessments/index.yaml.
+# Course manifest for ATS046. Each section lists its README, modules (landing, parts, lab Question reading and lab entry after the part tested, summary), a capstone and a quiz.
 training:
   id: ATS046
   title: 'KCSA: Compliance and Security Frameworks'
-  description: Concept lessons, diagrams and original scenario assessments covering every published objective
-    in this KCSA domain. No labs or playgrounds.
+  description: Concept lessons, diagrams, playgrounds, graded labs, capstones and original scenario quizzes
+    covering every published objective in this KCSA domain. Labs run on kind (Kubernetes 1.35).
   certification:
     name: Kubernetes and Cloud Native Security Associate
     code: KCSA
@@ -16,87 +16,474 @@ training:
     - Supply Chain Compliance
     - Automation and Tooling
 modules:
-- id: module-intro
-  title: Introduction
-  description: Audience, learning approach, reading requirements and contribution process.
-  content:
-  - type: reading
+  - id: module-intro
     title: Introduction
-    path: sections/intro/README.md
-  - type: reading
-    title: Welcome To The Course
-    path: sections/intro/course-01-welcome.md
-  - type: reading
-    title: Get Your Machine Ready
-    path: sections/intro/course-02-get-your-machine-ready.md
-  - type: reading
-    title: How This Course Is Made
-    path: sections/intro/course-03-how-this-course-is-made.md
-- id: module-010
-  title: Compliance Frameworks
-  description: Concept lessons and scenario reasoning for Compliance Frameworks.
-  maturity: alpha
-  content:
-  - type: reading
-    title: 'Compliance Frameworks: Introduction'
-    path: sections/section-010/README.md
-  - type: reading
-    title: Compliance Scope And Control Evidence
-    path: sections/section-010/module-01/course.md
-  - type: reading
-    title: Frameworks, Scope And Demonstrable Controls
-    path: sections/section-010/module-01/course-01-frameworks-scope-and-demonstrable-controls.md
-  - type: reading
-    title: Summary
-    path: sections/section-010/module-01/course-02-summary.md
-- id: module-020
-  title: Threat Modelling Frameworks
-  description: Concept lessons and scenario reasoning for Threat Modelling Frameworks.
-  maturity: alpha
-  content:
-  - type: reading
-    title: 'Threat Modelling Frameworks: Introduction'
-    path: sections/section-020/README.md
-  - type: reading
-    title: Structured Threat Modelling
-    path: sections/section-020/module-01/course.md
-  - type: reading
-    title: Using A Framework To Ask Better Security Questions
-    path: sections/section-020/module-01/course-01-using-a-framework-to-ask-better-security-questions.md
-  - type: reading
-    title: Summary
-    path: sections/section-020/module-01/course-02-summary.md
-- id: module-030
-  title: Supply Chain Compliance
-  description: Concept lessons and scenario reasoning for Supply Chain Compliance.
-  maturity: alpha
-  content:
-  - type: reading
-    title: 'Supply Chain Compliance: Introduction'
-    path: sections/section-030/README.md
-  - type: reading
-    title: Supply Chain Assurance Evidence
-    path: sections/section-030/module-01/course.md
-  - type: reading
-    title: Demonstrating What Was Built And Deployed
-    path: sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
-  - type: reading
-    title: Summary
-    path: sections/section-030/module-01/course-02-summary.md
-- id: module-040
-  title: Automation and Tooling
-  description: Concept lessons and scenario reasoning for Automation and Tooling.
-  maturity: alpha
-  content:
-  - type: reading
-    title: 'Automation and Tooling: Introduction'
-    path: sections/section-040/README.md
-  - type: reading
-    title: Automation, Findings And Control Drift
-    path: sections/section-040/module-01/course.md
-  - type: reading
-    title: What Security Automation Can Establish
-    path: sections/section-040/module-01/course-01-what-security-automation-can-establish.md
-  - type: reading
-    title: Summary
-    path: sections/section-040/module-01/course-02-summary.md
+    description: Audience, learning approach, reading requirements and contribution process.
+    content:
+    - type: reading
+      title: Introduction
+      path: sections/intro/README.md
+    - type: reading
+      title: Welcome To The Course
+      path: sections/intro/course-01-welcome.md
+    - type: reading
+      title: Get Your Machine Ready
+      path: sections/intro/course-02-get-your-machine-ready.md
+    - type: reading
+      title: How This Course Is Made
+      path: sections/intro/course-03-how-this-course-is-made.md
+  - id: module-010
+    title: "Compliance Frameworks"
+    description: >
+      Makes the reader able to tie a security requirement to a control
+      and to evidence that another person can check: scope, versions,
+      time and shared responsibility, evidence collected from the
+      Kubernetes API, and an audit with kube-bench against the CIS
+      Kubernetes Benchmark with a record of findings and exceptions.
+
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Compliance Scope And Control Evidence"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "Frameworks, Benchmarks, Policies And Evidence"
+        path: sections/section-010/module-01/course-01-frameworks-benchmarks-and-evidence.md
+      - type: reading
+        title: "Scope, Versions And Shared Responsibility"
+        path: sections/section-010/module-01/course-02-scope-versions-and-responsibility.md
+      - type: reading
+        title: "Collecting Control Evidence With kubectl"
+        path: sections/section-010/module-01/course-03-collecting-control-evidence-with-kubectl.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Compliance Scope And Control Evidence Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: compliance
+        task_kind: fix
+        tags: [compliance, cis-benchmark, rbac, cluster-admin, serviceaccount, privileged, evidence]
+        learning_goals:
+          - Remove a cluster-admin binding from a service account that does not call the API
+          - Stop service account tokens from being mounted and remove a privileged container
+          - Record the scope, cluster version, time and control results in a ConfigMap
+        resources:
+          - name: "CIS Kubernetes Benchmark"
+            url: https://www.cisecurity.org/benchmark/kubernetes
+          - name: "Kubernetes RBAC good practices"
+            url: https://kubernetes.io/docs/concepts/security/rbac-good-practices/
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Auditing A Cluster Against The CIS Kubernetes Benchmark"
+        path: sections/section-010/module-02/course.md
+      - type: reading
+        title: "How kube-bench Reads A Cluster"
+        path: sections/section-010/module-02/course-01-how-kube-bench-reads-a-cluster.md
+      - type: reading
+        title: "Reading kube-bench Results"
+        path: sections/section-010/module-02/course-02-reading-kube-bench-results.md
+      - type: reading
+        title: "Recording And Excepting Findings"
+        path: sections/section-010/module-02/course-03-recording-and-excepting-findings.md
+      - type: reading
+        title: "Question"
+        path: sections/section-010/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Audit A Cluster With kube-bench Lab"
+        path: sections/section-010/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: compliance
+        task_kind: build
+        tags: [kube-bench, cis-benchmark, job, hostpid, jq, exceptions, evidence]
+        learning_goals:
+          - Run kube-bench as a Job with host process access and read-only host paths on the control-plane node
+          - Build a per-target summary of failed checks from the Job log
+          - Record accepted failures as exceptions that name only checks that failed
+        resources:
+          - name: "kube-bench"
+            url: https://github.com/aquasecurity/kube-bench
+          - name: "Running kube-bench in a cluster"
+            url: https://github.com/aquasecurity/kube-bench/blob/main/docs/running.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Compliance Frameworks Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: compliance
+        task_kind: build
+        tags: [kube-bench, cis-benchmark, rbac, serviceaccount, pod-security-admission, privileged, evidence]
+        learning_goals:
+          - Run kube-bench for the master target and record the number of failed checks
+          - Remove a cluster-admin binding, token mounts and privileged or host-sharing pods in one namespace
+          - Enforce the baseline Pod Security level and record the evidence in a ConfigMap
+        resources:
+          - name: "CIS Kubernetes Benchmark"
+            url: https://www.cisecurity.org/benchmark/kubernetes
+          - name: "Pod Security Admission"
+            url: https://kubernetes.io/docs/concepts/security/pod-security-admission/
+      - type: quiz
+        title: "Knowledge Check: Compliance Frameworks"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
+
+  - id: module-020
+    title: "Threat Modelling Frameworks"
+    description: >
+      Makes the reader able to find, rank and reduce threats to a
+      Kubernetes application in a repeatable way: assets, data flows and
+      trust boundaries, the STRIDE questions, mitigations with residual
+      risk, and the MITRE ATT&CK and Kubernetes threat matrices applied to
+      one attack path that the reader breaks with RBAC, token, securityContext
+      and NetworkPolicy controls.
+
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Structured Threat Modelling"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "Assets, Data Flows And Trust Boundaries"
+        path: sections/section-020/module-01/course-01-assets-data-flows-and-trust-boundaries.md
+      - type: reading
+        title: "Asking The STRIDE Questions"
+        path: sections/section-020/module-01/course-02-asking-the-stride-questions.md
+      - type: reading
+        title: "Mitigations And Residual Risk"
+        path: sections/section-020/module-01/course-03-mitigations-and-residual-risk.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Structured Threat Modelling Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: threat-modelling
+        task_kind: fix
+        tags: [stride, threat-modelling, rbac, networkpolicy, securitycontext, residual-risk]
+        learning_goals:
+          - Remove an over-broad RoleBinding and give a service account only the one ConfigMap read it needs
+          - Allow only one client to reach a service with a NetworkPolicy on the pod port
+          - Harden a privileged pod without breaking the application
+        resources:
+          - name: "Kubernetes security overview"
+            url: https://kubernetes.io/docs/concepts/security/
+          - name: "Kubernetes network policies"
+            url: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Kubernetes Attack Paths And MITRE ATT&CK"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Tactics, Techniques And The Kubernetes Matrices"
+        path: sections/section-020/module-02/course-01-tactics-techniques-and-the-kubernetes-matrices.md
+      - type: reading
+        title: "Following An Attack Path"
+        path: sections/section-020/module-02/course-02-following-an-attack-path.md
+      - type: reading
+        title: "Breaking The Path"
+        path: sections/section-020/module-02/course-03-breaking-the-path.md
+      - type: reading
+        title: "Question"
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Kubernetes Attack Paths Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: threat-modelling
+        task_kind: fix
+        tags: [mitre-attack, attack-path, serviceaccount, automount, securitycontext, hostpath, networkpolicy]
+        learning_goals:
+          - Remove the Role that lets a compromised pod read Secrets
+          - Stop the service account token from being mounted
+          - Remove privileged mode and the hostPath mount, and limit the pod egress
+        resources:
+          - name: "MITRE ATT&CK Containers matrix"
+            url: https://attack.mitre.org/matrices/enterprise/containers/
+          - name: "Kubernetes service accounts"
+            url: https://kubernetes.io/docs/concepts/security/service-accounts/
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-04-summary.md
+
+      - type: reading
+        title: "Question"
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Threat Modelling Frameworks Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: threat-modelling
+        task_kind: fix
+        tags: [stride, mitre-attack, rbac, serviceaccount, securitycontext, networkpolicy, residual-risk]
+        learning_goals:
+          - Remove a cluster-admin binding and stop tokens from being mounted
+          - Harden a privileged pod and restrict who may call a service
+          - Record residual risk for three STRIDE categories in a ConfigMap
+        resources:
+          - name: "Kubernetes pod security standards"
+            url: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+      - type: quiz
+        title: "Knowledge Check: Threat Modelling Frameworks"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
+
+  - id: module-030
+    title: "Supply Chain Compliance"
+    description: >
+      Makes the reader able to show that the software running in a cluster
+      is the software that was built and approved: source, build and
+      artifact records tied together by the image digest, SBOMs in SPDX and
+      CycloneDX, provenance and SLSA levels, in-toto attestations, signing
+      with cosign, and an admission gate that admits only signed images
+      carrying an SBOM attestation.
+
+    content:
+      - type: reading
+        title: "Section Overview"
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Supply Chain Assurance Evidence"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "Demonstrating What Was Built And Deployed"
+        path: sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+      - type: reading
+        title: "SBOM Formats And Provenance"
+        path: sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+      - type: reading
+        title: "Verification Decisions And Retention"
+        path: sections/section-030/module-01/course-03-verification-decisions-and-retention.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Supply Chain Assurance Evidence Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: supply-chain
+        task_kind: build
+        tags: [sbom, spdx, trivy, image-digest, release-evidence, vulnerability-scan, exception]
+        learning_goals:
+          - Read the digest of a running image and create an SPDX SBOM of exactly that digest
+          - Scan the SBOM and record the findings count and the decision with an exception owner and expiry when needed
+          - Tie the digest, SBOM hash, package count and decision together in one release record
+        resources:
+          - name: "SPDX specification"
+            url: https://spdx.dev/learn/overview/
+          - name: "Trivy SBOM documentation"
+            url: https://trivy.dev/docs/latest/supply-chain/sbom/
+          - name: "SLSA specification"
+            url: https://slsa.dev/spec/v1.0/levels
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Signing And Verifying Images"
+        path: sections/section-030/module-02/course.md
+      - type: reading
+        title: "Digests And Key-Based Signing"
+        path: sections/section-030/module-02/course-01-digests-and-key-based-signing.md
+      - type: reading
+        title: "Attestations And SBOMs"
+        path: sections/section-030/module-02/course-02-attestations-and-sbom.md
+      - type: reading
+        title: "The Kyverno Verification Gate"
+        path: sections/section-030/module-02/course-03-kyverno-verifyimages-gate.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Signing And Verifying Images Lab"
+        path: sections/section-030/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 35m
+        topic: supply-chain
+        task_kind: build
+        tags: [cosign, image-signing, kyverno, verify-images, admission-control, digest]
+        learning_goals:
+          - Generate a cosign key pair and sign an image by digest
+          - Write a Kyverno ClusterPolicy that refuses images without a signature from the trusted key
+          - Prove the policy rejects unsigned and foreign-signed images and leaves other registries alone
+        resources:
+          - name: "Cosign documentation"
+            url: https://docs.sigstore.dev/cosign/signing/overview/
+          - name: "Kyverno verify images"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/verify-images/
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-02/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Supply Chain Compliance Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 45m
+        topic: supply-chain
+        task_kind: build
+        tags: [cosign, attestation, sbom, spdx, kyverno, release-gate, trivy]
+        learning_goals:
+          - Sign two images and attach a signed SPDX SBOM attestation to one of them
+          - Write a two-rule Kyverno policy that requires both a signature and an SBOM attestation
+          - Prove the gate rejects an image with no SBOM, an unsigned image and one attested by another key
+        resources:
+          - name: "Cosign attestations"
+            url: https://docs.sigstore.dev/cosign/verifying/attestation/
+          - name: "Kyverno verify images"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/verify-images/
+      - type: quiz
+        title: "Knowledge Check: Supply Chain Compliance"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+
+  - id: module-040
+    title: "Automation and Tooling"
+    description: >
+      Makes the reader able to run and read the three kinds of security
+      automation that keep a cluster compliant: configuration scanning
+      with Trivy, policy enforcement at admission with Kyverno and
+      ValidatingAdmissionPolicy, and runtime detection with Falco rules.
+      It covers findings, control drift, exceptions and evidence.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-040/README.md
+
+      - type: reading
+        title: "Automation, Findings And Control Drift"
+        path: sections/section-040/module-01/course.md
+      - type: reading
+        title: "What Security Automation Can Establish"
+        path: sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+      - type: reading
+        title: "Scan A Cluster With Trivy"
+        path: sections/section-040/module-01/course-02-scan-a-cluster-with-trivy.md
+      - type: reading
+        title: "Fix Drift And Record Exceptions"
+        path: sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+      - type: reading
+        title: Question
+        path: sections/section-040/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Fix Findings And Record An Exception Lab"
+        path: sections/section-040/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: security-automation
+        task_kind: fix
+        tags: [trivy, misconfiguration-scan, finding, security-context, privileged, exception, ignore-file, evidence]
+        learning_goals:
+          - Remove a privileged setting and harden a Deployment, and prove the change on the running pods
+          - Record a scoped, explained and dated exception for a finding that cannot be fixed
+          - Keep the workloads available while the findings are closed
+        resources:
+          - name: "Trivy Kubernetes misconfiguration scanning"
+            url: https://trivy.dev/latest/docs/coverage/iac/kubernetes/
+          - name: "Trivy filtering and ignore files"
+            url: https://trivy.dev/latest/docs/configuration/filtering/
+          - name: "Kubernetes security context"
+            url: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+      - type: reading
+        title: Summary
+        path: sections/section-040/module-01/course-04-summary.md
+
+      - type: reading
+        title: "Policy Enforcement And Runtime Detection"
+        path: sections/section-040/module-02/course.md
+      - type: reading
+        title: "Admission Policy With Kyverno"
+        path: sections/section-040/module-02/course-01-admission-policy-with-kyverno.md
+      - type: reading
+        title: "Native Policy With ValidatingAdmissionPolicy"
+        path: sections/section-040/module-02/course-02-native-policy-with-validatingadmissionpolicy.md
+      - type: reading
+        title: Question
+        path: sections/section-040/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Enforce Admission Policy Lab"
+        path: sections/section-040/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 25m
+        topic: policy-enforcement
+        task_kind: build
+        tags: [kyverno, clusterpolicy, validatingadmissionpolicy, cel, audit, enforce, policyreport]
+        learning_goals:
+          - Switch a Kyverno policy from Audit to Enforce and prove the rejection with a server-side dry run
+          - Read a policy report and tell a failed Pod result from an old ReplicaSet result
+          - Write a ValidatingAdmissionPolicy with a Deny binding limited to one namespace
+        resources:
+          - name: "Kyverno validate rules"
+            url: https://kyverno.io/docs/policy-types/cluster-policy/validate/
+          - name: "Kyverno policy reports"
+            url: https://kyverno.io/docs/policy-reports/
+          - name: "Validating Admission Policy"
+            url: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
+      - type: reading
+        title: "Reading Falco Rules"
+        path: sections/section-040/module-02/course-03-reading-falco-rules.md
+      - type: reading
+        title: Summary
+        path: sections/section-040/module-02/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-040/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Automation and Tooling Capstone"
+        path: sections/section-040/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 40m
+        topic: security-automation
+        task_kind: build
+        tags: [trivy, kyverno, validatingadmissionpolicy, drift, exception, compliance-loop, hostnetwork, privileged]
+        learning_goals:
+          - Scan live Deployments, fix a finding and repair a drift against an approved manifest
+          - Prevent the finding and the drift from returning with Kyverno and a ValidatingAdmissionPolicy
+          - Record a scoped and dated exception for a finding that stays
+        resources:
+          - name: "Trivy documentation"
+            url: https://trivy.dev/latest/docs/
+          - name: "Kyverno documentation"
+            url: https://kyverno.io/docs/
+          - name: "Validating Admission Policy"
+            url: https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/
+      - type: quiz
+        title: "Knowledge Check: Automation and Tooling"
+        path: sections/section-040/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Knowledge Check: Compliance and Security Frameworks"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70

@@ -1,0 +1,254 @@
+# Starting state for the findings playground and lab: the Starfleet example
+# workloads with deliberate misconfigurations, and a Trivy toolbox in `tools`.
+#   scout   has no securityContext at all
+#   probe   runs a privileged container
+#   shuttle writes to its root file system (it writes /tmp/last-run)
+#   drifter has no securityContext, in `outpost`
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: starfleet
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: outpost
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tools
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scout
+  namespace: starfleet
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: probe
+  namespace: starfleet
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shuttle
+  namespace: starfleet
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: drifter
+  namespace: outpost
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scout
+  namespace: starfleet
+  labels:
+    app: scout
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scout
+  template:
+    metadata:
+      labels:
+        app: scout
+    spec:
+      serviceAccountName: scout
+      containers:
+        - name: scout
+          image: ghcr.io/stefanprodan/podinfo:6.15.0
+          ports:
+            - name: http
+              containerPort: 9898
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: scout
+  namespace: starfleet
+spec:
+  selector:
+    app: scout
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe
+  namespace: starfleet
+  labels:
+    app: probe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      serviceAccountName: probe
+      containers:
+        - name: probe
+          image: mccutchen/go-httpbin:2.25.0
+          ports:
+            - name: http
+              containerPort: 8080
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: probe
+  namespace: starfleet
+spec:
+  selector:
+    app: probe
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shuttle
+  namespace: starfleet
+  labels:
+    app: shuttle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shuttle
+  template:
+    metadata:
+      labels:
+        app: shuttle
+    spec:
+      serviceAccountName: shuttle
+      containers:
+        - name: shuttle
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do date > /tmp/last-run; sleep 30; done"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 100
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drifter
+  namespace: outpost
+  labels:
+    app: drifter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drifter
+  template:
+    metadata:
+      labels:
+        app: drifter
+    spec:
+      serviceAccountName: drifter
+      containers:
+        - name: drifter
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+---
+# The exception register. Trivy reads it as an ignore file (.trivyignore.yaml).
+# It starts empty: no finding is accepted yet.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: trivy-exceptions
+  namespace: tools
+data:
+  trivyignore.yaml: |
+    misconfigurations: []
+---
+# A toolbox pod that holds the Trivy command-line tool, so every learner uses
+# the same Trivy version whatever their own machine is.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trivy
+  namespace: tools
+  labels:
+    app: trivy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trivy
+  template:
+    metadata:
+      labels:
+        app: trivy
+    spec:
+      containers:
+        - name: trivy
+          image: ghcr.io/aquasecurity/trivy:0.76.1
+          command: ["sh", "-c", "tail -f /dev/null"]
+          env:
+            - name: TRIVY_DISABLE_TELEMETRY
+              value: "true"
+            - name: TRIVY_SKIP_VERSION_CHECK
+              value: "true"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              memory: 1Gi

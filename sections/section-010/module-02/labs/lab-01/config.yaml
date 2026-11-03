@@ -1,0 +1,57 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Audit A Cluster With kube-bench And Record The Findings (LAB). Graded against
+# the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-010-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - docker.io/aquasec/kube-bench:v0.16.0
+      - curlimages/curl:8.22.0
+
+# Starting state: an empty `compliance` namespace. The learner writes the Job,
+# the summary and the exceptions.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the compliance namespace
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+
+validation:
+  scripts:
+    - name: kube-bench-job-completed
+      description: The kube-bench Job completed and its report covers all four targets of cis-2.0
+      type: file
+      source: validation/validate-kube-bench-job-completed.sh
+      hint: Run the Job in the compliance namespace with hostPID, the host paths, a control-plane node selector and toleration, and the arguments run --targets master,node,etcd,policies --benchmark cis-2.0 --json.
+    - name: kube-bench-summary-matches
+      description: kube-bench-summary matches the totals and failed checks of the Job log
+      type: file
+      source: validation/validate-kube-bench-summary-matches.sh
+      hint: Build summary.json from the Job log with jq, one object per target with node_type, the four totals and a failed list, then create the ConfigMap from the file.
+    - name: exceptions-recorded
+      description: kube-bench-exceptions names only failed checks and gives a reason for each
+      type: file
+      source: validation/validate-exceptions-recorded.sh
+      hint: Each key is a check identifier with status FAIL in your report, for example 1.2.1 if it failed. The value is a sentence that says why you accept it.
+
+teardown:
+  keepCluster: false

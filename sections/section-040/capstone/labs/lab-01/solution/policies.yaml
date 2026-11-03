@@ -1,0 +1,52 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged-containers
+spec:
+  background: true
+  rules:
+    - name: no-privileged
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["starfleet"]
+      validate:
+        failureAction: Enforce
+        message: "Privileged containers are not allowed in starfleet."
+        pattern:
+          spec:
+            =(initContainers):
+              - =(securityContext):
+                  =(privileged): "false"
+            containers:
+              - =(securityContext):
+                  =(privileged): "false"
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: deny-host-network
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - expression: "!has(object.spec.template.spec.hostNetwork) || object.spec.template.spec.hostNetwork == false"
+      message: "Deployments must not use the host network."
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: deny-host-network-starfleet
+spec:
+  policyName: deny-host-network
+  validationActions: ["Deny"]
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: starfleet

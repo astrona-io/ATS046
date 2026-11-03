@@ -1,0 +1,78 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Fix Failing Controls And Record Evidence (LAB). Graded against the live
+# cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-010-01
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: the Starfleet workloads, a shuttle service account bound to
+# cluster-admin, a privileged probe container and token mounts everywhere.
+# The failures are left in place on purpose.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the workloads and the three failing controls
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the old pods are gone and the RBAC answer changed
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: shuttle-cluster-admin-removed
+      description: shuttle is not bound to cluster-admin and keeps its service account
+      type: file
+      source: validation/validate-shuttle-cluster-admin-removed.sh
+      hint: Find the binding to cluster-admin that names the shuttle service account and delete it. Do not delete the service account.
+    - name: shuttle-least-privilege
+      description: shuttle has no Kubernetes API permissions
+      type: file
+      source: validation/validate-shuttle-least-privilege.sh
+      hint: The shuttle never calls the API server. Do not replace cluster-admin with admin, edit or view.
+    - name: token-not-mounted
+      description: scout and probe pods do not mount a service account token
+      type: file
+      source: validation/validate-token-not-mounted.sh
+      hint: Set automountServiceAccountToken to false in the pod template (or on the service account), then wait for the rollout. The check reads the running pods.
+    - name: probe-not-privileged
+      description: No pod in starfleet has a privileged container
+      type: file
+      source: validation/validate-probe-not-privileged.sh
+      hint: Remove the privileged setting from the probe container in the Deployment and wait for the new pod.
+    - name: workloads-running
+      description: scout, probe and shuttle are still available with their original images
+      type: file
+      source: validation/validate-workloads-running.sh
+      hint: Fix the settings. Do not delete, scale down or replace the Deployments.
+    - name: control-evidence-recorded
+      description: The ConfigMap control-evidence records scope, version, time and three controls
+      type: file
+      source: validation/validate-control-evidence-recorded.sh
+      hint: Create ConfigMap control-evidence in starfleet with the keys scope, kubernetes-version, observed-at, 5.1.1, 5.1.6 and 5.2.2. Take the version from kubectl version.
+
+teardown:
+  keepCluster: false

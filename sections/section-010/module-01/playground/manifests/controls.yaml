@@ -1,0 +1,18 @@
+# Starting state for the controls playground and lab.
+# - shuttle: its service account is bound to cluster-admin by a
+#   ClusterRoleBinding. The shuttle needs no access to the Kubernetes API.
+# The `probe` Deployment in starfleet.yaml runs a privileged container, and
+# every pod mounts its service account token. All three are deliberate
+# failures of the controls the module teaches the reader to check.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: shuttle-admin
+subjects:
+  - kind: ServiceAccount
+    name: shuttle
+    namespace: starfleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin

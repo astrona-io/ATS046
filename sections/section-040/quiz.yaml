@@ -1,0 +1,233 @@
+# Knowledge check for section 040. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats046-040
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-040
+  title: Automation and Tooling
+questions:
+- id: ats046-040-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare configuration scanning, policy enforcement and runtime detection
+  source_readings:
+  - sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  prompt: 'A scan reports that the `probe` Deployment runs a privileged container. A Kyverno ClusterPolicy against privileged containers exists in `starfleet`, with `failureAction: Audit`. A teammate applies a second privileged Deployment in `starfleet`. What happens?'
+  options:
+  - id: a
+    text: The request is accepted and stored, and the policy records a failed result.
+    explanation: Correct. `Audit` records a failure and lets the request through. Only `Enforce` rejects the request.
+  - id: b
+    text: The request is rejected, because a policy that matches the object exists.
+    explanation: A matching policy only rejects when its action is `Enforce`.
+  - id: c
+    text: The request is accepted and no result is recorded, because a scan already reported the finding.
+    explanation: A scan and a policy are separate controls. The policy records its own result.
+  - id: d
+    text: The privileged `probe` pod is stopped, because the policy removes objects that break it.
+    explanation: Admission policy acts on requests. It does not remove objects that already exist.
+  correct_option: a
+  explanation: "`Audit` records a failure and lets the request through. Only `Enforce` rejects the request, and a scan does not prevent anything."
+- id: ats046-040-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret findings through scope, version and effective behavior
+  source_readings:
+  - sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  prompt: A scan of the `scout` Deployment manifest in the repository shows no finding for a missing `runAsNonRoot` setting. A mutating admission webhook in the cluster removes the `securityContext` of new pods. A reviewer wants to claim that the running `scout` pod runs as non-root. What is the strongest evidence?
+  options:
+  - id: a
+    text: The clean scan of the manifest in the repository.
+    explanation: The scan describes the file. A webhook can change the object after the scan.
+  - id: b
+    text: The same scan with a newer rule bundle.
+    explanation: A newer bundle still reads the file and not the running pod.
+  - id: c
+    text: The `securityContext` of the Deployment template in the cluster.
+    explanation: The template is closer, but the webhook changes the pods that are created from it.
+  - id: d
+    text: The `securityContext` and user of the running pod, read from the cluster.
+    explanation: Correct. Only the running pod shows what the container runtime applied after every controller and webhook acted.
+  correct_option: d
+  explanation: A file scan describes a file and a template scan describes a template. The running pod shows the effective behavior.
+- id: ats046-040-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret findings through scope, version and effective behavior
+  source_readings:
+  - sections/section-040/module-01/course-02-scan-a-cluster-with-trivy.md
+  prompt: A team scans the same manifests with `trivy config` in January and again in March. No manifest changed, and the March report lists two new findings. What is the most likely cause, and what makes the two reports comparable?
+  options:
+  - id: a
+    text: The rule set changed between the scans. Record the Trivy version and the rule set with each report, or use `--skip-check-update` with a pinned version.
+    explanation: Correct. Checks are added, renamed and changed between releases and bundle updates. A report without the tool version and rules cannot be compared.
+  - id: b
+    text: Trivy reads the cluster directly, so a hidden change appeared. Nothing needs to be recorded.
+    explanation: "`trivy config` reads files and not the cluster, and the report needs context to be evidence."
+  - id: c
+    text: Severity labels rotate over time. Compare only the severities.
+    explanation: Severity labels belong to a check and do not rotate.
+  - id: d
+    text: The scan is not reproducible, so it has no value as evidence.
+    explanation: A scan is reproducible when the target, tool version and rules are fixed and recorded.
+  correct_option: a
+  explanation: The rule set can change without any manifest change. Recording the version and rules, or pinning them, makes scans comparable.
+- id: ats046-040-q04
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Relate exception review and evidence retention to continuous assurance
+  source_readings:
+  - sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+  prompt: A workload must keep a writable root file system, and the scanner reports the read-only file system check as a finding. Which exception entry is the best record?
+  options:
+  - id: a
+    text: An ignore entry for the check ID with no path, so every Deployment is covered in the future.
+    explanation: This hides the same finding on every workload, including ones that do not need it.
+  - id: b
+    text: An ignore entry for the check ID on this workload's manifest, with a statement that names the reason, an owner and a compensating control, and an expiry date within weeks.
+    explanation: Correct. The entry is scoped, explained, owned and temporary, so a reviewer can decide at the expiry date.
+  - id: c
+    text: No entry. The Deployment is changed to a read-only file system and the writing is moved elsewhere later.
+    explanation: This breaks the workload now, and the task states that it must keep writing.
+  - id: d
+    text: An ignore entry with an expiry date ten years away, so nobody has to review it.
+    explanation: An exception that is never reviewed becomes a permanent bypass.
+  correct_option: b
+  explanation: A good exception is scoped to the object, states a reason, an owner and a compensating control, and expires so that it is reviewed.
+- id: ats046-040-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain control drift and reproducible corrective changes
+  source_readings:
+  - sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+  prompt: 'An administrator patches the `probe` Deployment in the cluster to remove `privileged: true`, and the next scan is clean. Two days later the finding is back. The Deployment is created from a manifest in a repository by an automated pipeline. What is the durable correction?'
+  options:
+  - id: a
+    text: Patch the Deployment again after every pipeline run.
+    explanation: A repeated manual fix is not reproducible and the finding returns each time.
+  - id: b
+    text: Stop the pipeline, so that it can no longer overwrite the cluster.
+    explanation: This removes the managed process and leaves the cluster without an authoritative source.
+  - id: c
+    text: Mark the finding as a false positive in the scanner.
+    explanation: The setting is real. A false positive label would hide it.
+  - id: d
+    text: Change the manifest in the repository, so the pipeline applies the corrected value, and verify the running pod after the next run.
+    explanation: Correct. The source is the desired state. A fix that is not in the source is undone by the next apply.
+  correct_option: d
+  explanation: A durable repair changes the authoritative source and is verified in the running object.
+- id: ats046-040-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate exception review and evidence retention to continuous assurance
+  source_readings:
+  - sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+  prompt: An auditor asks for evidence that the namespace was scanned last month. Which stored record is the most useful?
+  options:
+  - id: a
+    text: A screenshot of a terminal that shows 'no findings'.
+    explanation: A screenshot carries no target, version or time that can be checked.
+  - id: b
+    text: A message that says the scan was clean.
+    explanation: A statement is a claim and not a record.
+  - id: c
+    text: The JSON report with its time, target, tool version and a checksum, stored with access control.
+    explanation: Correct. The context lets a later reader see what was assessed, with what, and that the file is unchanged.
+  - id: d
+    text: The Trivy configuration file, because it shows that a scan was possible.
+    explanation: The configuration shows that a scan could run. It does not show a result.
+  correct_option: c
+  explanation: 'Evidence needs its context: time, target, tool version and a way to show that it is unchanged.'
+- id: ats046-040-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain what Kyverno and ValidatingAdmissionPolicy enforce at admission, and what they do not change
+  source_readings:
+  - sections/section-040/module-02/course-01-admission-policy-with-kyverno.md
+  prompt: After `probe` is fixed and its new pod runs, a policy report in `starfleet` still lists a failed result for the privileged-container policy. The `scope.kind` of that result is `ReplicaSet`. How should this be read?
+  options:
+  - id: a
+    text: The old ReplicaSet keeps its old privileged template, so the result describes that template and not a running pod.
+    explanation: Correct. After a rollout the old ReplicaSet remains with its old template and the background scan still reports it.
+  - id: b
+    text: The policy is in `Audit` mode and must be switched to `Enforce` before the result clears.
+    explanation: The action does not decide the report of an old object.
+  - id: c
+    text: The fix did not work, because a privileged pod still runs.
+    explanation: The new pod passes. The failed result is not for a pod.
+  - id: d
+    text: Kyverno is broken and the report must be deleted by hand.
+    explanation: The report is accurate for the object it describes.
+  correct_option: a
+  explanation: A ReplicaSet keeps its old template after a rollout, so its report entry describes that template. Check the scope kind of each result.
+- id: ats046-040-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Compare Audit and Enforce, and Warn, Audit and Deny, and predict the effect on a request
+  source_readings:
+  - sections/section-040/module-02/course-02-native-policy-with-validatingadmissionpolicy.md
+  prompt: A cluster has a ValidatingAdmissionPolicy that requires an `owner` label on Deployments. No binding was created. A user creates a Deployment without the label. What happens?
+  options:
+  - id: a
+    text: The request is rejected, because the policy exists.
+    explanation: A policy without a binding is not active.
+  - id: b
+    text: The request is accepted with a warning.
+    explanation: A warning needs a binding with the action `Warn`.
+  - id: c
+    text: The request is accepted and an audit annotation is written.
+    explanation: An audit annotation needs a binding with the action `Audit`.
+  - id: d
+    text: The request is accepted, because only a binding turns a policy on.
+    explanation: Correct. The policy holds the rule and the binding gives the scope and the actions.
+  correct_option: d
+  explanation: A ValidatingAdmissionPolicy does nothing until a binding names it.
+- id: ats046-040-q09
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Compare Audit and Enforce, and Warn, Audit and Deny, and predict the effect on a request
+  source_readings:
+  - sections/section-040/module-02/course-02-native-policy-with-validatingadmissionpolicy.md
+  prompt: A ValidatingAdmissionPolicy requires the expression `has(object.metadata.labels) && 'owner' in object.metadata.labels`. A Deployment carries the label `owner` only under `spec.template.metadata.labels`. The binding action is `Deny` and it matches the namespace. What is the result?
+  options:
+  - id: a
+    text: The request is accepted, because the pod labels count.
+    explanation: The expression reads the labels of the Deployment and not the pod template.
+  - id: b
+    text: The request is rejected, because the expression reads the Deployment metadata, which has no `owner` label.
+    explanation: Correct. `object` is the Deployment, and the label is only in the pod template.
+  - id: c
+    text: The request is accepted with a warning, because the label is present somewhere.
+    explanation: The action is `Deny`, and the label is not where the expression looks.
+  - id: d
+    text: The request fails with an expression error, because the field is absent.
+    explanation: The `has()` test protects the lookup, so no error occurs.
+  correct_option: b
+  explanation: The expression reads `object.metadata.labels`. A label in the pod template does not satisfy it, and `Deny` rejects the request.
+- id: ats046-040-q10
+  type: single_choice
+  difficulty: advanced
+  learning_objective: 'Read a Falco rule: condition, output and priority, and the events it matches'
+  source_readings:
+  - sections/section-040/module-02/course-03-reading-falco-rules.md
+  prompt: A Falco rule fires when a shell program starts in a container and `proc.tty != 0`. A script in a pod starts `sh -c` with no terminal, and no alert appears. What follows?
+  options:
+  - id: a
+    text: Falco is not working on that node.
+    explanation: The rule excludes processes without a terminal, so no alert is expected.
+  - id: b
+    text: The pod is safe, because no alert means no shell ran.
+    explanation: A shell ran. The condition excluded it.
+  - id: c
+    text: The rule does not cover scripted shells, which is a gap to consider, and not proof that nothing ran.
+    explanation: Correct. The terminal test separates interactive use from scripts. A scripted shell stays outside the rule.
+  - id: d
+    text: The priority is too low, so Falco dropped the event.
+    explanation: Priority sets the severity of an alert. It does not decide whether the condition matched.
+  correct_option: c
+  explanation: The condition requires a terminal, so a scripted shell does not match. An absent alert is not proof that nothing ran.

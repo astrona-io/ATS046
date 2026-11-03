@@ -1,0 +1,72 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Policy Enforcement And Runtime Detection (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-lab-040-02
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: Kyverno 1.19.1 with its webhooks ready, the Starfleet
+# workloads (probe is privileged) and a ClusterPolicy in Audit mode. No
+# ValidatingAdmissionPolicy exists.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Install Kyverno 1.19.1, create the workloads and the Audit-mode ClusterPolicy
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-enforcement
+      description: Wait until the policies reject bad requests
+      type: file
+      source: testing/wait-for-enforcement.sh
+
+validation:
+  scripts:
+    - name: probe-not-privileged
+      description: probe runs no privileged container and is available
+      type: file
+      source: validation/validate-probe-not-privileged.sh
+      hint: Set privileged to false in the probe container securityContext and wait for the rollout. Check the new pod.
+    - name: privileged-rejected
+      description: starfleet rejects privileged pods and Deployments, outpost is not affected, clean pods are accepted
+      type: file
+      source: validation/validate-privileged-rejected.sh
+      hint: Change validate.failureAction of the rule in the ClusterPolicy from Audit to Enforce. Do not widen the match to other namespaces.
+    - name: policy-report-clean
+      description: The Kyverno policy report for starfleet shows no failed pod or Deployment for the policy
+      type: file
+      source: validation/validate-policy-report-clean.sh
+      hint: Fix probe first. The report updates a short time after the new pod appears. Old ReplicaSets can still show a failure, and they are not counted.
+    - name: owner-label-denied
+      description: A Deployment without an owner label is rejected in starfleet only
+      type: file
+      source: validation/validate-owner-denied.sh
+      hint: Create a ValidatingAdmissionPolicy named require-owner-label with a Deployment rule and a binding with validationActions Deny and a namespaceSelector on kubernetes.io/metadata.name=starfleet.
+    - name: existing-deployments-labelled
+      description: scout, probe and shuttle carry a non-empty owner label and are available
+      type: file
+      source: validation/validate-existing-labelled.sh
+      hint: Label the three Deployments (metadata.labels, not only the pod template) with owner=starfleet-ops.
+
+teardown:
+  keepCluster: false

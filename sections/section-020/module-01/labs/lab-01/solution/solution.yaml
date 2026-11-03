@@ -1,0 +1,90 @@
+# Reference solution for the STRIDE lab.
+# 1. Elevation of privilege: scout may read only its own ConfigMap.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: scout-config-reader
+  namespace: starfleet
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["scout-config"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: scout-config-reader
+  namespace: starfleet
+subjects:
+  - kind: ServiceAccount
+    name: scout
+    namespace: starfleet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: scout-config-reader
+---
+# 2. Information disclosure and spoofing of a caller: only shuttle reaches probe.
+# The port is the container port of probe, not the Service port.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: probe-allow-shuttle
+  namespace: starfleet
+spec:
+  podSelector:
+    matchLabels:
+      app: probe
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: shuttle
+      ports:
+        - protocol: TCP
+          port: 8080
+---
+# 3. Elevation of privilege: probe runs unprivileged and as a non-root user.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe
+  namespace: starfleet
+  labels:
+    app: probe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: probe
+  template:
+    metadata:
+      labels:
+        app: probe
+    spec:
+      serviceAccountName: probe
+      containers:
+        - name: probe
+          image: mccutchen/go-httpbin:2.25.0
+          ports:
+            - name: http
+              containerPort: 8080
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 64Mi

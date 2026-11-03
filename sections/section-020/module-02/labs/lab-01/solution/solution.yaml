@@ -1,0 +1,77 @@
+# Reference solution for the attack path lab.
+# Break steps 1 to 3 of the path: no Secret access through the API, no token in
+# the pod, and no node access from the container. Then limit the network path.
+# 1. RBAC: the Role and RoleBinding are deleted by apply.sh (kubectl delete).
+# 2. Token and securityContext: the shuttle Deployment is replaced below.
+# 3. NetworkPolicy: shuttle reaches probe and DNS only.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: shuttle-egress
+  namespace: starfleet
+spec:
+  podSelector:
+    matchLabels:
+      app: shuttle
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: probe
+      ports:
+        - protocol: TCP
+          port: 8080
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shuttle
+  namespace: starfleet
+  labels:
+    app: shuttle
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shuttle
+  template:
+    metadata:
+      labels:
+        app: shuttle
+    spec:
+      serviceAccountName: shuttle
+      automountServiceAccountToken: false
+      containers:
+        - name: shuttle
+          image: curlimages/curl:8.22.0
+          command: ["sh", "-c", "while true; do sleep 30; done"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop: ["ALL"]
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 32Mi

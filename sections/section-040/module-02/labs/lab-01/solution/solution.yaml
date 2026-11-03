@@ -1,0 +1,27 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: require-owner-label
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["apps"]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["deployments"]
+  validations:
+    - expression: "has(object.metadata.labels) && 'owner' in object.metadata.labels && object.metadata.labels['owner'] != ''"
+      message: "Every Deployment must carry a non-empty owner label."
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: require-owner-label-starfleet
+spec:
+  policyName: require-owner-label
+  validationActions: ["Deny"]
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: starfleet

@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Signing And Verifying Images (PLAYGROUND) — playground environment.
+# A clean sandbox: Kyverno 1.19.1, a plain-HTTP registry in the cluster, and a
+# toolbox pod with cosign and Trivy. No key, no signature, no policy.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-playground-030-02
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - alpine:3.22.2
+      - registry:2.8.3
+
+bootstrap:
+  init:
+    - name: prepare
+      description: "Install Kyverno 1.19.1, the toolbox pod (cosign 2.6.5, Trivy 0.76.1) and the registry, then copy three images into it"
+      type: file
+      source: bootstrap/prepare.sh
+
+teardown:
+  keepCluster: false

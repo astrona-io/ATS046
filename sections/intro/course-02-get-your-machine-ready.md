@@ -1,7 +1,9 @@
 # Get Your Machine Ready
 
-You need a Markdown reader or the Astrona reading interface. A browser can display the repository pages. The course uses Mermaid diagrams, a text format that the reading interface turns into drawings. If your reader does not display a diagram, the surrounding prose still explains its mechanism.
+You need the Astrona command-line tool, `astrona`, and a container engine that can run kind (Kubernetes in Docker), such as Docker or Podman. kind creates a single-node Kubernetes cluster inside a container. You also need `kubectl`, the Kubernetes command-line client, and `jq`, a tool that filters JSON. Each playground and lab needs about 2 GiB of free memory.
 
-No Kubernetes cluster, container engine, cloud account or installed command-line tool is required. The course has no playgrounds or graded labs. Configuration fields and diagnostic evidence are explained as examples; you are not asked to apply changes to a machine.
+Check the tool with `astrona check`. Start an environment with `astrona run`, check a graded lab with `astrona submit`, and remove an environment with `astrona destroy` followed by the environment name. The page that opens a playground or lab shows the exact commands for it.
 
-Use a notebook to record unfamiliar terms and your reasoning for each practice answer. When a page is missing, check that you are viewing the content branch or published revision that contains this draft. If a diagram or reading fails to load, record the page title and the visible error when reporting the issue.
+Some labs download a tool or an image when they start, for example Kyverno or kube-bench. Those labs need internet access from the machine. If a start fails, run `astrona destroy` for the environment, check that the container engine is running and has enough memory, and start again.
+
+The course uses Mermaid diagrams, a text format that the reading interface turns into drawings. If your reader does not display a diagram, the surrounding prose still explains its mechanism. The labs in this course are marked as built but not yet run end to end. If a lab check behaves differently from its task text, report the lab name and the failing check.

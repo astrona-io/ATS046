@@ -1,0 +1,38 @@
+# Tells the node's container runtime (containerd) to pull images named
+# registry.supply-chain.svc.cluster.local:5000/... over plain HTTP from the
+# registry Service's cluster IP. The node cannot resolve cluster DNS names.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: node-registry-access
+  namespace: supply-chain
+spec:
+  backoffLimit: 2
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: setup
+          image: curlimages/curl:8.22.0
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              dir=/host-containerd/certs.d/registry.supply-chain.svc.cluster.local:5000
+              mkdir -p "$dir"
+              cat > "$dir/hosts.toml" <<'TOML'
+              [host."http://10.96.0.50:5000"]
+                capabilities = ["pull", "resolve"]
+              TOML
+              echo "containerd registry access written to $dir"
+          volumeMounts:
+            - name: containerd
+              mountPath: /host-containerd
+      volumes:
+        - name: containerd
+          hostPath:
+            path: /etc/containerd
+            type: Directory

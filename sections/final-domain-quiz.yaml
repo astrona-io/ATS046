@@ -1,0 +1,337 @@
+# Final domain knowledge check across all four sections.
+---
+schema_version: 1
+kind: question_bank
+id: ats046-final
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material written for this course; not official exam
+  questions.
+scope:
+  type: domain
+  id: compliance-and-security-frameworks
+  title: Compliance and Security Frameworks
+questions:
+- id: ats046-final-q01
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Distinguish a framework, a benchmark, a policy and an evidence
+    record
+  source_readings:
+  - sections/section-010/module-01/course-01-frameworks-benchmarks-and-evidence.md
+  prompt: A team passes every check of a configuration benchmark and states that all
+    application authorization rules are correct. What is wrong with the statement?
+  options:
+  - id: a
+    text: Benchmarks only apply to managed clusters.
+    explanation: This option does not match. A benchmark covers a defined scope. Passing
+      it does not prove anything outside that scope.
+  - id: b
+    text: Benchmarks never give useful evidence.
+    explanation: This option does not match. A benchmark covers a defined scope. Passing
+      it does not prove anything outside that scope.
+  - id: c
+    text: The claim goes beyond the scope of the benchmark, which checks configuration
+      and not business authorization.
+    explanation: Correct. A benchmark covers a defined scope. Passing it does not
+      prove anything outside that scope.
+  - id: d
+    text: Application code never affects security.
+    explanation: This option does not match. A benchmark covers a defined scope. Passing
+      it does not prove anything outside that scope.
+  correct_option: c
+  explanation: A benchmark covers a defined scope. Passing it does not prove anything
+    outside that scope.
+- id: ats046-final-q02
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain assessment scope, version and shared responsibility
+  source_readings:
+  - sections/section-010/module-01/course-02-scope-versions-and-responsibility.md
+  prompt: A cloud provider publishes a compliance report for its managed control plane.
+    Who still has to supply evidence for the permissions granted to workloads in the
+    customer's namespaces?
+  options:
+  - id: a
+    text: The customer, because workload permissions are the customer's responsibility.
+    explanation: Correct. Shared responsibility splits ownership. The customer owns
+      the configuration it applies.
+  - id: b
+    text: The auditor, who creates the evidence.
+    explanation: This option does not match. Shared responsibility splits ownership.
+      The customer owns the configuration it applies.
+  - id: c
+    text: The provider, because it runs the control plane.
+    explanation: This option does not match. Shared responsibility splits ownership.
+      The customer owns the configuration it applies.
+  - id: d
+    text: Nobody, because the report covers the whole service.
+    explanation: This option does not match. Shared responsibility splits ownership.
+      The customer owns the configuration it applies.
+  correct_option: a
+  explanation: Shared responsibility splits ownership. The customer owns the configuration
+    it applies.
+- id: ats046-final-q03
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Interpret kube-bench results and record exceptions
+  source_readings:
+  - sections/section-010/module-02/course-02-reading-kube-bench-results.md
+  prompt: kube-bench reports a check as WARN, not FAIL. What does WARN mean?
+  options:
+  - id: a
+    text: The check failed on a worker node only.
+    explanation: This option does not match. A WARN result means the tool could not
+      decide the check automatically.
+  - id: b
+    text: The check is not part of the benchmark.
+    explanation: This option does not match. A WARN result means the tool could not
+      decide the check automatically.
+  - id: c
+    text: The check passed with a low score.
+    explanation: This option does not match. A WARN result means the tool could not
+      decide the check automatically.
+  - id: d
+    text: The check is manual or cannot be decided automatically, so a person must
+      assess it.
+    explanation: Correct. A WARN result means the tool could not decide the check
+      automatically.
+  correct_option: d
+  explanation: A WARN result means the tool could not decide the check automatically.
+- id: ats046-final-q04
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Explain a repeatable asset, data-flow and threat analysis process
+  source_readings:
+  - sections/section-020/module-01/course-01-assets-data-flows-and-trust-boundaries.md
+  prompt: In a data-flow diagram of an application, where should a threat model look
+    most closely for threats?
+  options:
+  - id: a
+    text: Only at the cluster nodes.
+    explanation: This option does not match. Trust boundaries are the places where
+      data moves between different levels of trust.
+  - id: b
+    text: At every point where data crosses a trust boundary.
+    explanation: Correct. Trust boundaries are the places where data moves between
+      different levels of trust.
+  - id: c
+    text: Only at the database.
+    explanation: This option does not match. Trust boundaries are the places where
+      data moves between different levels of trust.
+  - id: d
+    text: Only at the container image.
+    explanation: This option does not match. Trust boundaries are the places where
+      data moves between different levels of trust.
+  correct_option: b
+  explanation: Trust boundaries are the places where data moves between different
+    levels of trust.
+- id: ats046-final-q05
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Use STRIDE categories without treating them as a risk score
+  source_readings:
+  - sections/section-020/module-01/course-02-asking-the-stride-questions.md
+  prompt: A pod can edit a ConfigMap that another service trusts and reads as its
+    configuration. Which STRIDE category fits best?
+  options:
+  - id: a
+    text: Spoofing
+    explanation: This option does not match. Changing data without permission is Tampering.
+  - id: b
+    text: Repudiation
+    explanation: This option does not match. Changing data without permission is Tampering.
+  - id: c
+    text: Tampering
+    explanation: Correct. Changing data without permission is Tampering.
+  - id: d
+    text: Denial of service
+    explanation: This option does not match. Changing data without permission is Tampering.
+  correct_option: c
+  explanation: Changing data without permission is Tampering.
+- id: ats046-final-q06
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Relate mitigations to attack paths
+  source_readings:
+  - sections/section-020/module-02/course-03-breaking-the-path.md
+  prompt: An attacker runs code in a pod and uses the pod's service account token
+    to call the API server. Which change cuts this step of the path most directly?
+  options:
+  - id: a
+    text: Disable automatic mounting of the token and bind no roles to the service
+      account.
+    explanation: Correct. The path needs a token with rights. Removing the token or
+      its rights breaks the step.
+  - id: b
+    text: Use a longer image tag.
+    explanation: This option does not match. The path needs a token with rights. Removing
+      the token or its rights breaks the step.
+  - id: c
+    text: Add a label to the namespace.
+    explanation: This option does not match. The path needs a token with rights. Removing
+      the token or its rights breaks the step.
+  - id: d
+    text: Increase the pod's memory limit.
+    explanation: This option does not match. The path needs a token with rights. Removing
+      the token or its rights breaks the step.
+  correct_option: a
+  explanation: The path needs a token with rights. Removing the token or its rights
+    breaks the step.
+- id: ats046-final-q07
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Distinguish SBOM, provenance, signature and verification decision
+  source_readings:
+  - sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+  prompt: Which statement describes provenance correctly?
+  options:
+  - id: a
+    text: A private key used for signing.
+    explanation: This option does not match. Provenance describes the build. An SBOM
+      lists components.
+  - id: b
+    text: A report of known vulnerabilities.
+    explanation: This option does not match. Provenance describes the build. An SBOM
+      lists components.
+  - id: c
+    text: A list of the components inside an image.
+    explanation: This option does not match. Provenance describes the build. An SBOM
+      lists components.
+  - id: d
+    text: A record of how, where and from which source an artifact was built.
+    explanation: Correct. Provenance describes the build. An SBOM lists components.
+  correct_option: d
+  explanation: Provenance describes the build. An SBOM lists components.
+- id: ats046-final-q08
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain the limits of signatures and attestations
+  source_readings:
+  - sections/section-030/module-02/course-01-digests-and-key-based-signing.md
+  prompt: Why does an image signature refer to a digest and not to a tag?
+  options:
+  - id: a
+    text: Tags are too long to sign.
+    explanation: This option does not match. A digest changes when the content changes.
+      A tag can point to new content.
+  - id: b
+    text: A tag can be moved to different content, while a digest identifies exact
+      content.
+    explanation: Correct. A digest changes when the content changes. A tag can point
+      to new content.
+  - id: c
+    text: Registries do not store tags.
+    explanation: This option does not match. A digest changes when the content changes.
+      A tag can point to new content.
+  - id: d
+    text: Digests are encrypted.
+    explanation: This option does not match. A digest changes when the content changes.
+      A tag can point to new content.
+  correct_option: b
+  explanation: A digest changes when the content changes. A tag can point to new content.
+- id: ats046-final-q09
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Describe how an admission policy enforces image verification
+  source_readings:
+  - sections/section-030/module-02/course-03-kyverno-verifyimages-gate.md
+  prompt: A Kyverno policy with verifyImages is set to Audit. An unsigned image is
+    deployed. What happens?
+  options:
+  - id: a
+    text: The pod is admitted and the violation is recorded in a report.
+    explanation: Correct. Audit mode records violations. Enforce mode rejects them.
+  - id: b
+    text: The image is signed automatically.
+    explanation: This option does not match. Audit mode records violations. Enforce
+      mode rejects them.
+  - id: c
+    text: The pod is deleted after one hour.
+    explanation: This option does not match. Audit mode records violations. Enforce
+      mode rejects them.
+  - id: d
+    text: The pod is rejected.
+    explanation: This option does not match. Audit mode records violations. Enforce
+      mode rejects them.
+  correct_option: a
+  explanation: Audit mode records violations. Enforce mode rejects them.
+- id: ats046-final-q10
+  type: single_choice
+  difficulty: beginner
+  learning_objective: Compare configuration scanning, policy enforcement and runtime
+    detection
+  source_readings:
+  - sections/section-040/module-01/course-01-what-security-automation-can-establish.md
+  prompt: Which tool type can reject a new pod at the moment it is created?
+  options:
+  - id: a
+    text: A vulnerability database.
+    explanation: This option does not match. Admission control decides before the
+      object is stored.
+  - id: b
+    text: A configuration scanner that runs every night.
+    explanation: This option does not match. Admission control decides before the
+      object is stored.
+  - id: c
+    text: An admission policy in enforce mode.
+    explanation: Correct. Admission control decides before the object is stored.
+  - id: d
+    text: A runtime detector that reads system calls.
+    explanation: This option does not match. Admission control decides before the
+      object is stored.
+  correct_option: c
+  explanation: Admission control decides before the object is stored.
+- id: ats046-final-q11
+  type: single_choice
+  difficulty: intermediate
+  learning_objective: Explain control drift and reproducible correction
+  source_readings:
+  - sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+  prompt: An administrator clears a finding with a manual change, and the next deployment
+    from the source repository brings the finding back. What should change?
+  options:
+  - id: a
+    text: The cluster time.
+    explanation: This option does not match. A fix must be recorded where the configuration
+      is defined.
+  - id: b
+    text: The number of replicas.
+    explanation: This option does not match. A fix must be recorded where the configuration
+      is defined.
+  - id: c
+    text: The scanner rules.
+    explanation: This option does not match. A fix must be recorded where the configuration
+      is defined.
+  - id: d
+    text: The authoritative source configuration, which the deployment applies.
+    explanation: Correct. A fix must be recorded where the configuration is defined.
+  correct_option: d
+  explanation: A fix must be recorded where the configuration is defined.
+- id: ats046-final-q12
+  type: single_choice
+  difficulty: advanced
+  learning_objective: Relate exception review and evidence retention to continuous
+    assurance
+  source_readings:
+  - sections/section-040/module-01/course-03-fix-drift-and-record-exceptions.md
+  prompt: Which record makes an exception acceptable in an audit?
+  options:
+  - id: a
+    text: A hidden entry in the scan report.
+    explanation: This option does not match. An exception needs an owner, a scope
+      and a review point.
+  - id: b
+    text: A stated asset, reason, scope, owner and review date.
+    explanation: Correct. An exception needs an owner, a scope and a review point.
+  - id: c
+    text: A comment that says OK.
+    explanation: This option does not match. An exception needs an owner, a scope
+      and a review point.
+  - id: d
+    text: A deleted finding.
+    explanation: This option does not match. An exception needs an owner, a scope
+      and a review point.
+  correct_option: b
+  explanation: An exception needs an owner, a scope and a review point.

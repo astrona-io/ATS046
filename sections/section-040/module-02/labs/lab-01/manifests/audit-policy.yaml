@@ -1,0 +1,26 @@
+# The seeded Kyverno policy. It starts in Audit mode: it records violations
+# but rejects nothing. The learner changes it to Enforce.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged-containers
+spec:
+  background: true
+  rules:
+    - name: no-privileged
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces: ["starfleet"]
+      validate:
+        failureAction: Audit
+        message: "Privileged containers are not allowed in starfleet."
+        pattern:
+          spec:
+            =(initContainers):
+              - =(securityContext):
+                  =(privileged): "false"
+            containers:
+              - =(securityContext):
+                  =(privileged): "false"

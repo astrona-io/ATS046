@@ -1,0 +1,253 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats046-030
+course_id: ATS046
+exam_code: KCSA
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "Supply Chain Compliance"
+questions:
+  - id: ats046-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Relate source, build and artifact records to an assurance requirement through the image digest"
+    source_readings:
+      - sections/section-030/module-01/course-01-demonstrating-what-was-built-and-deployed.md
+    prompt: |-
+      A release record says "scout:6.15.0 approved". Two weeks later the team rebuilds the image and pushes it under the same tag. What does the record still prove?
+    options:
+      - id: a
+        text: "That the rebuilt image is approved, because the tag is the same."
+        explanation: "A tag is a label that can move, so the approval does not carry over to new content."
+      - id: b
+        text: "Nothing about the rebuilt image. The record names a tag, and the new content has a different digest and no record."
+        explanation: "Correct. Only a digest identifies exact content. A record written against a digest would have left the rebuilt image without evidence, and a check would have found that."
+      - id: c
+        text: "That the source revision was reviewed, which covers every later build."
+        explanation: "A source review covers one revision, not every artifact that is built later."
+      - id: d
+        text: "That the base image is unchanged, because the tag is unchanged."
+        explanation: "The tag says nothing about what the build fetched or when."
+    correct_option: b
+    explanation: "A tag can point at different content over time. Records must name the digest so that a changed artifact has no matching evidence."
+
+  - id: ats046-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Distinguish SBOM, provenance, signature and verification decision"
+    source_readings:
+      - sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+    prompt: |-
+      A security lead asks whether any deployed image contains a library that was just reported as vulnerable. Which record answers this fastest, without opening the images?
+    options:
+      - id: a
+        text: "The provenance of each image."
+        explanation: "Provenance describes how an image was built, not which components it contains."
+      - id: b
+        text: "The signature of each image."
+        explanation: "A signature identifies who vouched for the bytes. It does not list components."
+      - id: c
+        text: "The SBOM of each image."
+        explanation: "Correct. An SBOM is a searchable inventory of components, so the library can be found without opening the image."
+      - id: d
+        text: "The tag of each image."
+        explanation: "A tag is a name and holds no component information."
+    correct_option: c
+    explanation: "An SBOM is a machine-readable inventory of components. It answers whether a component is present, not whether it is exploitable."
+
+  - id: ats046-030-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Create an SBOM in SPDX and CycloneDX format and read their structure"
+    source_readings:
+      - sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+    prompt: |-
+      Trivy creates an SPDX JSON SBOM and a CycloneDX SBOM of the same image digest. The package count in one differs slightly from the component count in the other. What is the most likely reason?
+    options:
+      - id: a
+        text: "The two formats model the image differently, so the counts of their entries can differ."
+        explanation: "Correct. SPDX lists packages and relationships, CycloneDX lists components and dependencies, and each format represents some elements in its own way."
+      - id: b
+        text: "The two files describe different image digests."
+        explanation: "Both were created from the same digest, so the digest is not the cause."
+      - id: c
+        text: "One of the files is unsigned, so Trivy removed entries."
+        explanation: "Trivy does not sign an SBOM when it creates it, and signing does not change the list."
+      - id: d
+        text: "CycloneDX can only list operating system packages."
+        explanation: "CycloneDX describes libraries and other component types as well."
+    correct_option: a
+    explanation: "SPDX and CycloneDX have different structures. The same image can produce different counts without either file being wrong."
+
+  - id: ats046-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the limits of framework levels and attestations"
+    source_readings:
+      - sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+    prompt: |-
+      A vendor states that its build process reaches SLSA build level 3. What can a consumer conclude?
+    options:
+      - id: a
+        text: "The software has no known vulnerabilities."
+        explanation: "A level describes the build process, not the quality of the code."
+      - id: b
+        text: "The vendor's source code was reviewed by two people."
+        explanation: "The build track does not describe source review practice."
+      - id: c
+        text: "The software contains no third-party components."
+        explanation: "A build level says nothing about dependencies."
+      - id: d
+        text: "The provenance is hard to forge, because the platform isolates builds and protects its signing key from the build steps."
+        explanation: "Correct. Level 3 describes how reliable the build record is, and it says nothing about defects in the code."
+    correct_option: d
+    explanation: "SLSA build levels describe the reliability of provenance and the build platform. They do not make claims about code quality."
+
+  - id: ats046-030-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe an in-toto attestation: subject digest, predicate type, predicate and signed envelope"
+    source_readings:
+      - sections/section-030/module-01/course-02-sbom-formats-and-provenance.md
+      - sections/section-030/module-02/course-02-attestations-and-sbom.md
+    prompt: |-
+      A verifier receives a signed statement that says "this image has an SPDX SBOM", but the statement names the digest of a different image. What should the verifier do?
+    options:
+      - id: a
+        text: "Accept it, because the signature is valid."
+        explanation: "A valid signature only shows who made the statement. The subject must still match the image."
+      - id: b
+        text: "Reject it, because the subject digest in the signed statement does not match the image being checked."
+        explanation: "Correct. The subject digest ties the claim to one artifact, and a mismatch means the statement does not describe this image."
+      - id: c
+        text: "Accept it if the predicate type is correct."
+        explanation: "A correct predicate type does not make up for a wrong subject."
+      - id: d
+        text: "Replace the digest in the statement and verify again."
+        explanation: "Changing the statement breaks the signature, and it would defeat the purpose of the check."
+    correct_option: b
+    explanation: "An attestation binds a claim to a subject digest. A verifier must compare the subject with the image it checks."
+
+  - id: ats046-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Distinguish a signature from a verification decision, and record exceptions with an owner and an expiry"
+    source_readings:
+      - sections/section-030/module-01/course-03-verification-decisions-and-retention.md
+    prompt: |-
+      The pipeline signs every image it builds, including a build of an old branch that has known critical findings. A check only asks "is there a valid signature?". What is the result for the old build?
+    options:
+      - id: a
+        text: "It is rejected, because signatures cover only approved images."
+        explanation: "A signature does not mean approval."
+      - id: b
+        text: "It is rejected, because old branches cannot be signed."
+        explanation: "Any build can be signed."
+      - id: c
+        text: "It is admitted, because a signature shows who vouched for the bytes but not that the bytes are acceptable."
+        explanation: "Correct. The decision needs a policy that also checks the findings, the evidence and any exception."
+      - id: d
+        text: "It is admitted only when a transparency log entry exists."
+        explanation: "A log entry records that a signature was made. It does not judge the image."
+    correct_option: c
+    explanation: "A signature identifies the signer. A verification decision compares the evidence with a policy."
+
+  - id: ats046-030-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Describe retention and exception handling for release evidence"
+    source_readings:
+      - sections/section-030/module-01/course-03-verification-decisions-and-retention.md
+    prompt: |-
+      A team accepts a vulnerability in a release and records "approved with exception". Which record makes the exception reviewable later?
+    options:
+      - id: a
+        text: "An owner, an expiry date, the digest and finding it covers, and the reason."
+        explanation: "Correct. Scope, owner, expiry and reason let someone check the exception and end it on time."
+      - id: b
+        text: "A note that says the risk is low."
+        explanation: "A note without an owner and a date has no review path."
+      - id: c
+        text: "The name of the person who approved the release, with no date."
+        explanation: "Without an expiry the exception can last forever."
+      - id: d
+        text: "A copy of the vulnerability scan report only."
+        explanation: "The report shows the finding but not who accepted it or until when."
+    correct_option: a
+    explanation: "An exception needs a scope, an owner, an expiry and a reason, so it can be reviewed and does not become permanent by neglect."
+
+  - id: ats046-030-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain why a signature must cover a digest and not a tag"
+    source_readings:
+      - sections/section-030/module-02/course-01-digests-and-key-based-signing.md
+    prompt: |-
+      The team signs the digest of `scout:6.15.0`. Later, an attacker pushes a different image under the tag `6.15.0`. The cluster verifies the image behind the tag. What happens?
+    options:
+      - id: a
+        text: "Verification passes, because the old signature is attached to the tag."
+        explanation: "The signature is attached to the digest, not the tag."
+      - id: b
+        text: "Verification passes, because registries copy signatures to the new image."
+        explanation: "A registry does not copy signatures between images."
+      - id: c
+        text: "Verification fails, because the signing key expires when the tag moves."
+        explanation: "Keys do not expire when a tag moves."
+      - id: d
+        text: "Verification fails, because the new image has a different digest and no signature."
+        explanation: "Correct. The signature vouches for the old digest only. The new digest has no signature from the key."
+    correct_option: d
+    explanation: "A signature covers one digest. A moved tag points at a new digest that carries no signature."
+
+  - id: ats046-030-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Attach an SBOM as a signed attestation and verify it by predicate type"
+    source_readings:
+      - sections/section-030/module-02/course-02-attestations-and-sbom.md
+    prompt: |-
+      An image carries a CycloneDX attestation signed by the trusted key. A policy requires an SPDX attestation (`https://spdx.dev/Document`) signed by that key. What does the policy do?
+    options:
+      - id: a
+        text: "It admits the image, because the key is trusted."
+        explanation: "The key is trusted, but the policy asks for a specific predicate type."
+      - id: b
+        text: "It admits the image, because a CycloneDX SBOM is an SBOM too."
+        explanation: "The policy names an exact predicate type, and CycloneDX has a different one."
+      - id: c
+        text: "It rejects the image, because no attestation of the required predicate type verifies."
+        explanation: "Correct. The type is part of the check. A signed statement of another type does not satisfy it."
+      - id: d
+        text: "It converts the CycloneDX attestation into SPDX."
+        explanation: "A verification policy does not convert documents."
+    correct_option: c
+    explanation: "Policies match the predicate type exactly, so a signed statement of another type does not satisfy the rule."
+
+  - id: ats046-030-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Write a Kyverno ClusterPolicy that requires both a signature and an SBOM attestation"
+    source_readings:
+      - sections/section-030/module-02/course-03-kyverno-verifyimages-gate.md
+    prompt: |-
+      A team needs a Kyverno policy that requires both a valid signature and a verified SPDX attestation for images from the cluster registry. How should the policy be built?
+    options:
+      - id: a
+        text: "One `verifyImages` entry with both `attestors` and `attestations`."
+        explanation: "A single entry verifies signatures or attestations, not both."
+      - id: b
+        text: "Two rules in the policy: one with `attestors` for the signature and one with `attestations` for the SPDX type, each naming the trusted key."
+        explanation: "Correct. Each rule verifies one kind of evidence, and a pod must pass both rules."
+      - id: c
+        text: "One rule with `failureAction: Audit`, so failures are visible."
+        explanation: "Audit records failures but admits the pod, so it is not a gate."
+      - id: d
+        text: "One rule with `required: false` for the signature and an attestation without attestors."
+        explanation: "This lets unsigned images pass and accepts attestations from any signer."
+    correct_option: b
+    explanation: "Signature and attestation checks belong in separate rules, each with its own trusted key and with the failure action set to Enforce."

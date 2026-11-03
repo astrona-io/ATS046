@@ -1,0 +1,84 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Compliance Frameworks Capstone (LAB): a scoped compliance assessment with
+# evidence. Graded against the live cluster. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-capstone-010
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - curlimages/curl:8.22.0
+      - docker.io/aquasec/kube-bench:v0.16.0
+
+# Starting state: namespace orbit with a privileged beacon that shares the node
+# process namespace, a relay, token mounts, a service account bound to
+# cluster-admin and no Pod Security labels; an empty audit namespace. The
+# failures are left in place on purpose.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the orbit and audit namespaces and the failing controls
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-settled
+      description: Wait until the old pods in orbit are gone
+      type: file
+      source: testing/wait-for-settled.sh
+
+validation:
+  scripts:
+    - name: kube-bench-master-report
+      description: The kube-bench Job in audit completed with cis-2.0 control plane results
+      type: file
+      source: validation/validate-kube-bench-master-report.sh
+      hint: Run the Job in the audit namespace, not in orbit, with hostPID, the host paths, a control-plane node selector and toleration, and the arguments run --targets master --benchmark cis-2.0 --json.
+    - name: beacon-ci-no-admin
+      description: beacon-ci has no cluster-admin binding and no permissions
+      type: file
+      source: validation/validate-beacon-ci-no-admin.sh
+      hint: Delete the binding that names beacon-ci. Keep the service account and do not replace the grant with edit or admin.
+    - name: pods-not-privileged
+      description: No pod in orbit is privileged or shares a host namespace
+      type: file
+      source: validation/validate-pods-not-privileged.sh
+      hint: Remove privileged from the beacon container and hostPID from its pod template, then wait for the rollout.
+    - name: tokens-not-mounted
+      description: beacon and relay pods do not mount a service account token
+      type: file
+      source: validation/validate-tokens-not-mounted.sh
+      hint: Set automountServiceAccountToken to false in both pod templates and wait for the rollouts.
+    - name: orbit-enforces-policy
+      description: orbit enforces baseline or restricted and rejects privileged and hostPID pods
+      type: file
+      source: validation/validate-orbit-enforces-policy.sh
+      hint: Label the namespace pod-security.kubernetes.io/enforce=baseline after the pods are fixed.
+    - name: workloads-available
+      description: beacon and relay are available with their original images
+      type: file
+      source: validation/validate-workloads-available.sh
+      hint: Fix the settings. Do not delete, scale down or replace the Deployments.
+    - name: assessment-evidence
+      description: assessment-evidence records scope, version, time, benchmark, master failures and five controls
+      type: file
+      source: validation/validate-assessment-evidence.sh
+      hint: Create the ConfigMap in orbit with the keys scope, kubernetes-version, observed-at, benchmark, master-fail, 5.1.1, 5.1.6, 5.2.1, 5.2.2 and 5.2.3. Take master-fail from the Job log.
+
+teardown:
+  keepCluster: false

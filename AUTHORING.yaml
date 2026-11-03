@@ -1,5 +1,8 @@
+# Course authoring record. See .astrona/blueprint.yaml for the build plan.
+---
 version: 1
-approval: KCSA-LESSON-PLAN.md approved; reading-only correction 2026-10-11
+approval: KCSA-LESSON-PLAN.md approved; reading-only rule lifted by the maintainer
+  2026-11-03 (labs, playgrounds, capstones and quizzes added)
 course:
   id: ATS046
   certification:
@@ -14,10 +17,10 @@ course:
     - Supply Chain Compliance
     - Automation and Tooling
 defaults:
-  playground: false
-  module_lab: false
-  capstone: false
-  section_quiz: false
+  playground: true
+  module_lab: true
+  capstone: true
+  section_quiz: true
   final_quiz: true
 sections:
 - id: section-010
@@ -33,11 +36,18 @@ sections:
     - Identify why compliance evidence does not prove absence of risk.
     outline:
     - Frameworks, Scope And Demonstrable Controls
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
-  capstone: false
-  section_quiz: false
+  - id: module-02
+    title: Auditing A Cluster Against The CIS Kubernetes Benchmark
+    objectives: []
+    outline: []
+    playground: true
+    module_lab: true
+    diagrams: []
+  capstone: true
+  section_quiz: true
 - id: section-020
   title: Threat Modelling Frameworks
   curriculum_item: Threat Modelling Frameworks
@@ -51,10 +61,17 @@ sections:
     - Describe residual risk and model updates after a design change.
     outline:
     - Using A Framework To Ask Better Security Questions
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
-  capstone: false
+  - id: module-02
+    title: Kubernetes Attack Paths And MITRE ATT&CK
+    objectives: []
+    outline: []
+    playground: true
+    module_lab: true
+    diagrams: []
+  capstone: true
   section_quiz: true
 - id: section-030
   title: Supply Chain Compliance
@@ -69,11 +86,18 @@ sections:
     - Describe retention and exception handling for release evidence.
     outline:
     - Demonstrating What Was Built And Deployed
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
-  capstone: false
-  section_quiz: false
+  - id: module-02
+    title: Signing And Verifying Images
+    objectives: []
+    outline: []
+    playground: true
+    module_lab: true
+    diagrams: []
+  capstone: true
+  section_quiz: true
 - id: section-040
   title: Automation and Tooling
   curriculum_item: Automation and Tooling
@@ -87,9 +111,17 @@ sections:
     - Relate exception review and evidence retention to continuous assurance.
     outline:
     - What Security Automation Can Establish
-    playground: false
-    module_lab: false
+    playground: true
+    module_lab: true
     diagrams: []
-  capstone: false
+  - id: module-02
+    title: Policy Enforcement And Runtime Detection
+    objectives: []
+    outline: []
+    playground: true
+    module_lab: true
+    diagrams: []
+  capstone: true
   section_quiz: true
-assessment_format: YAML question banks, schema version 1; indexed in assessments/index.yaml
+assessment_format: quiz.yaml per section (question_bank, status draft, pass_score
+  70 in astrona.yaml) and sections/final-domain-quiz.yaml

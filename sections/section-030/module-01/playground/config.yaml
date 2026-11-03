@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Supply Chain Assurance Evidence (PLAYGROUND) — playground environment.
+# A clean sandbox: it starts the Starfleet workloads and a toolbox pod with
+# cosign and Trivy, then stays running. No task, no grading, no `astrona submit`.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-playground-030-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - alpine:3.22.2
+
+bootstrap:
+  init:
+    - name: prepare
+      description: "Start the Starfleet workloads, then install cosign 2.6.5 and Trivy 0.76.1 in the toolbox pod"
+      type: file
+      source: bootstrap/prepare.sh
+
+teardown:
+  keepCluster: false

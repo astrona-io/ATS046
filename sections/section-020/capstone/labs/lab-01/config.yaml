@@ -1,0 +1,75 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Threat Modelling Frameworks Capstone (LAB). Graded against the live cluster.
+# UNTESTED: built without running it. Validated statically only.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-capstone-020
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# Starting state: the Starfleet app with a privileged scout that mounts a
+# hostPath directory and is bound to cluster-admin, tokens mounted
+# everywhere, a probe that accepts traffic from every pod, and no residual-risk
+# register. The faults are left in place on purpose. kind's default network
+# plugin (kindnet) enforces NetworkPolicy.
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: Create the workloads and the faulty setup
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-policy
+      description: Wait until the network plugin enforces the probe policy
+      type: file
+      source: testing/wait-for-policy.sh
+
+validation:
+  scripts:
+    - name: no-cluster-admin
+      description: scout and shuttle have no broad rights
+      type: file
+      source: validation/validate-no-cluster-admin.sh
+      hint: Delete the ClusterRoleBinding scout-admin. Keep the service accounts and the Secret.
+    - name: tokens-not-mounted
+      description: scout and shuttle pods have no service account token
+      type: file
+      source: validation/validate-tokens-not-mounted.sh
+      hint: Set automountServiceAccountToken to false in the pod templates of both Deployments and wait for the new pods.
+    - name: scout-hardened
+      description: scout runs unprivileged, as non-root, without host access
+      type: file
+      source: validation/validate-scout-hardened.sh
+      hint: Remove privileged, the hostPath volume and its mount. Set runAsNonRoot true with a numeric runAsUser, allowPrivilegeEscalation false and drop ALL capabilities.
+    - name: probe-accepts-only-shuttle
+      description: Only shuttle reaches probe
+      type: file
+      source: validation/validate-probe-accepts-only-shuttle.sh
+      hint: Add a NetworkPolicy that selects the probe pods and allows ingress from pods labelled app=shuttle on container port 8080. The caller pod and the drifter pod must be refused.
+    - name: residual-risk-register
+      description: A residual risk is recorded for each mitigated threat
+      type: file
+      source: validation/validate-residual-risk-register.sh
+      hint: Create the ConfigMap residual-risk in starfleet with the keys spoofing, information-disclosure and elevation-of-privilege. Each value is one sentence that says what remains possible, at least 40 characters.
+
+teardown:
+  keepCluster: false

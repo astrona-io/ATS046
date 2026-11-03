@@ -1,0 +1,135 @@
+# Build progress for ATS046. Nothing was run on a cluster.
+version: 1
+items:
+- key: section-010/module-01/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/module-01/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/module-01/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/module-02/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/module-02/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/module-02/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-010/capstone
+  kind: capstone
+  status: done
+  note: built untested
+- key: section-010/quiz
+  kind: quiz
+  status: done
+  note: draft
+- key: section-020/module-01/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/module-01/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/module-01/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/module-02/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/module-02/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/module-02/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-020/capstone
+  kind: capstone
+  status: done
+  note: built untested
+- key: section-020/quiz
+  kind: quiz
+  status: done
+  note: draft
+- key: section-030/module-01/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/module-01/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/module-01/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/module-02/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/module-02/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/module-02/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-030/capstone
+  kind: capstone
+  status: done
+  note: built untested
+- key: section-030/quiz
+  kind: quiz
+  status: done
+  note: draft
+- key: section-040/module-01/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/module-01/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/module-01/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/module-02/playground
+  kind: playground
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/module-02/course
+  kind: course
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/module-02/lab
+  kind: lab
+  status: done
+  note: built untested; static checks only (astrona validate, bash -n, yaml)
+- key: section-040/capstone
+  kind: capstone
+  status: done
+  note: built untested
+- key: section-040/quiz
+  kind: quiz
+  status: done
+  note: draft
+- key: final-domain-quiz
+  kind: quiz
+  status: done
+  note: 12 questions, draft

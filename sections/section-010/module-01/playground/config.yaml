@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Compliance Scope And Control Evidence (PLAYGROUND) — playground environment.
+# A clean sandbox: it starts, applies the Starfleet workloads and three
+# deliberate control failures, then stays running for free exploration. No
+# task, no grading, no `astrona submit`. Built untested.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-playground-010-01
+  docs:
+    guide: docs/overview.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+
+# What the learner starts with: the Starfleet workloads, a service account
+# (shuttle) bound to cluster-admin, a privileged probe container, and service
+# account tokens mounted in every pod. No evidence record exists yet.
+bootstrap:
+  manifests:
+    - name: starfleet
+      type: file
+      source: manifests/starfleet.yaml
+    - name: controls
+      type: file
+      source: manifests/controls.yaml
+  waitFor:
+    - resource: deploy/scout
+      namespace: starfleet
+    - resource: deploy/probe
+      namespace: starfleet
+    - resource: deploy/shuttle
+      namespace: starfleet
+    - resource: deploy/drifter
+      namespace: outpost
+
+teardown:
+  keepCluster: false

@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://cli.astrona.io/schema/lab-config.schema.json
+#
+# Supply Chain Compliance Capstone (LAB). Graded against the live cluster.
+apiVersion: astrona.io/v1
+metadata:
+  name: ats-046-capstone-030
+  docs:
+    prerequisites: prerequisites.md
+    question: question.md
+    solution: solution.md
+
+runtime:
+  type: kind
+  kind:
+    image: kindest/node:v1.35.8
+    preloadImages:
+      - ghcr.io/stefanprodan/podinfo:6.15.0
+      - mccutchen/go-httpbin:2.25.0
+      - curlimages/curl:8.22.0
+      - alpine:3.22.2
+      - registry:2.8.3
+
+bootstrap:
+  init:
+    - name: seed-cluster
+      description: "Install Kyverno 1.19.1, the toolbox pod and the registry, then copy three images into it"
+      type: file
+      source: bootstrap/01-seed-cluster.sh
+
+# Applied only by `astrona test`: the reference solution.
+testing:
+  init:
+    - name: apply-solution
+      description: Apply the reference solution
+      type: file
+      source: solution/apply.sh
+    - name: wait-for-policy
+      description: Wait until Kyverno enforces the release gate
+      type: file
+      source: testing/wait-for-policy.sh
+
+validation:
+  scripts:
+    - name: scout-signed-and-attested
+      description: Scout has a signature and an SPDX attestation from the generated key; probe is signed without an SBOM attestation
+      type: file
+      source: validation/validate-scout-signed-and-attested.sh
+      hint: Generate the SBOM with trivy image --format spdx-json, then cosign attest --type spdxjson --predicate <file> on the scout digest. Sign probe, but do not attest it.
+    - name: gate-admits-scout
+      description: The release gate admits scout by digest and by tag
+      type: file
+      source: validation/validate-gate-admits-scout.sh
+      hint: Set rekor.ignoreTlog to true in both rules. The attestation type is https://spdx.dev/Document.
+    - name: gate-rejects-incomplete-releases
+      description: The gate rejects an image with no SBOM attestation, an unsigned image and an image signed by another key
+      type: file
+      source: validation/validate-gate-rejects-incomplete-releases.sh
+      hint: One rule verifies the signature and a second rule verifies the attestation. A verifyImages entry checks a signature or an attestation, not both.
+    - name: attestation-key-enforced
+      description: An image with a trusted signature but an attestation from another key is rejected
+      type: file
+      source: validation/validate-attestation-key-enforced.sh
+      hint: The attestation rule needs its own attestors with the public key. Without it, any attestation passes.
+    - name: gate-scope
+      description: outpost and other registries are not blocked
+      type: file
+      source: validation/validate-gate-scope.sh
+      hint: Match only the namespace starfleet and limit imageReferences to the lab registry.
+
+teardown:
+  keepCluster: false
