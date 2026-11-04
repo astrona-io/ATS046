@@ -5,7 +5,7 @@ kind: question_bank
 id: ats046-final
 course_id: ATS046
 exam_code: KCSA
-status: draft
+status: alpha
 provenance: Original practice material written for this course; not official exam
   questions.
 scope:
