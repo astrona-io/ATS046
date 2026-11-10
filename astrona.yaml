@@ -67,7 +67,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: compliance
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [compliance, cis-benchmark, rbac, cluster-admin, serviceaccount, privileged, evidence]
         learning_goals:
           - Remove a cluster-admin binding from a service account that does not call the API
@@ -179,7 +179,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: threat-modelling
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [stride, threat-modelling, rbac, networkpolicy, securitycontext, residual-risk]
         learning_goals:
           - Remove an over-broad RoleBinding and give a service account only the one ConfigMap read it needs
@@ -215,7 +215,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: threat-modelling
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [mitre-attack, attack-path, serviceaccount, automount, securitycontext, hostpath, networkpolicy]
         learning_goals:
           - Remove the Role that lets a compromised pod read Secrets
@@ -239,7 +239,7 @@ modules:
         difficulty: advanced
         estimated_duration: 40m
         topic: threat-modelling
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [stride, mitre-attack, rbac, serviceaccount, securitycontext, networkpolicy, residual-risk]
         learning_goals:
           - Remove a cluster-admin binding and stop tokens from being mounted
@@ -402,7 +402,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 25m
         topic: security-automation
-        task_kind: fix
+        task_kind: troubleshooting
         tags: [trivy, misconfiguration-scan, finding, security-context, privileged, exception, ignore-file, evidence]
         learning_goals:
           - Remove a privileged setting and harden a Deployment, and prove the change on the running pods
